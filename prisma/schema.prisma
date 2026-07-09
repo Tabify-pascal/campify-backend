@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Spot {
+  id              String        @id @default(cuid())
+  name            String
+  description     String
+  capacity        Int
+  pricePerNight   Int
+  imageUrl        String
+  size            Int
+  electricity     Boolean
+  waterConnection Boolean
+
+  features        SpotFeature[]
+  reservations    Reservation[]
+}
+
+model SpotFeature {
+  id     String @id @default(cuid())
+  name   String
+
+  spotId String
+  spot   Spot   @relation(fields: [spotId], references: [id], onDelete: Cascade)
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model Reservation {
+  id            String              @id @default(cuid())
+  spotId        String
+  spot          Spot                @relation(fields: [spotId], references: [id])
+  firstName     String
+  lastName      String
+  email         String
+  phone         String
+  guests        Int
+  arrivalDate   DateTime
+  departureDate DateTime
+  notes         String?
+  status        ReservationStatus   @default(PENDING)
+  createdAt     DateTime            @default(now())
+}
+
+model NewsItem {
+  id        String   @id @default(cuid())
+  title     String
+  excerpt   String
+  content   String
+  date      DateTime
+  imageUrl  String
+}
+
+model FaqItem {
+  id       String @id @default(cuid())
+  question String
+  answer   String
+}
+
+model ContactMessage {
+  id        String @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+}
