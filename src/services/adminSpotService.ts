@@ -2,6 +2,12 @@ import { prisma } from "../prisma.js";
 import { type AdminSpotBody } from "../schemas/adminSpotSchema.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 
+export function getAdminSpotById(id: string){
+    return prisma.spot.findUnique({
+        where: { id },
+    });
+}
+
 export async function createAdminSpot(data: AdminSpotBody){
     return prisma.spot.create({
         data: {

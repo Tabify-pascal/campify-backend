@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import path from "node:path";
 
 import spotsRouter from "./routes/spots.js";
 import newsRouter from "./routes/news.js";
@@ -18,6 +19,11 @@ const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
+
+app.use(
+    "/uploads",
+    express.static("uploads")
+);
 
 app.get("/api/health", (_req, res) =>
 {

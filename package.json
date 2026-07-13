@@ -7,7 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed" : "tsx prisma/seed.ts"
+    "prisma:seed": "tsx prisma/seed.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -20,17 +20,18 @@
     "@prisma/client": "^6.19.3",
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "multer": "^2.2.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/multer": "^2.2.0",
     "@types/node": "^26.0.1",
     "dotenv": "^17.4.2",
     "prisma": "^6.19.3",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   }
-  
 }
