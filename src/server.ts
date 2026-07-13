@@ -7,7 +7,11 @@ import faqRouter from "./routes/faq.js";
 import contactRouter from "./routes/contact.js";
 import reservationsRouter from "./routes/reservations.js";
 
+import adminSpotsRouter from "./routes/admin/spots.js";
+
 import { errorHandler } from "./middleware/errorHandler.js";
+
+
 
 const app = express();
 const PORT = 3000;
@@ -25,6 +29,8 @@ app.use("/api/news", newsRouter);
 app.use("/api/faq", faqRouter);
 app.use("/api/contact", contactRouter);
 app.use("/api/reservations", reservationsRouter);
+
+app.use("/api/admin/spots", adminSpotsRouter);
 
 app.use(errorHandler);
 
