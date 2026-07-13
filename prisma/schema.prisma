@@ -40,7 +40,7 @@ enum ReservationStatus {
 model Reservation {
   id            String              @id @default(cuid())
   spotId        String
-  spot          Spot                @relation(fields: [spotId], references: [id])
+  spot          Spot                @relation(fields: [spotId], references: [id], onDelete: Cascade)
   firstName     String
   lastName      String
   email         String
