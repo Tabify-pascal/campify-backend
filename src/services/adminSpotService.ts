@@ -1,5 +1,5 @@
 import { prisma } from "../prisma.js";
-import { type AdminSpotBody } from "../schemas/adminSpotSchema.js";
+import { type CreateAdminSpotBody, type UpdateAdminSpotBody } from "../schemas/adminSpotSchema.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 
 export function getAdminSpotById(id: string){
@@ -8,7 +8,7 @@ export function getAdminSpotById(id: string){
     });
 }
 
-export async function createAdminSpot(data: AdminSpotBody){
+export async function createAdminSpot(data: CreateAdminSpotBody){
     return prisma.spot.create({
         data: {
             name: data.name,
@@ -29,7 +29,7 @@ export async function createAdminSpot(data: AdminSpotBody){
     });
 }
 
-export async function updateAdminSpot(id: string, data: AdminSpotBody){
+export async function updateAdminSpot(id: string, data: UpdateAdminSpotBody){
     const existingSpot = await prisma.spot.findUnique({
         where: { id },
     });
@@ -50,7 +50,7 @@ export async function updateAdminSpot(id: string, data: AdminSpotBody){
                 description: data.description,
                 capacity: data.capacity,
                 pricePerNight: data.pricePerNight,
-                imageUrl: data.imageUrl,
+                imageUrl: data.imageUrl ?? existingSpot.imageUrl,
                 size: data.size,
                 electricity: data.electricity,
                 waterConnection: data.waterConnection,

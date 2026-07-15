@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import path from "node:path";
 
 import spotsRouter from "./routes/spots.js";
 import newsRouter from "./routes/news.js";

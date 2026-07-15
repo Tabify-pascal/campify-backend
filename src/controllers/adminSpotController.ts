@@ -1,19 +1,19 @@
-import { type Request, type Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { adminSpotSchema, type AdminSpotBody } from "../schemas/adminSpotSchema.js";
-import { createAdminSpot, deleteAdminSpot, updateAdminSpot, getAdminSpotById, } from "../services/adminSpotService.js";
+import { updateAdminSpotSchema, createAdminSpotSchema, type UpdateAdminSpotBody, type CreateAdminSpotBody } from "../schemas/adminSpotSchema.js";
+import { createAdminSpot, deleteAdminSpot, updateAdminSpot } from "../services/adminSpotService.js";
 import { type SpotParams } from "../types/spot.js";
 import { ValidationError } from "../errors/ValidationError.js";
+import type { Response, Request } from "express";
 
 export const createSpot = asyncHandler(async (
-    req: Request<Record<string, never>, unknown, AdminSpotBody>,
+    req: Request<SpotParams, unknown, CreateAdminSpotBody>, 
     res: Response
 ) => {
     if (!req.file) {
         throw new ValidationError("Spot image is required");
     }
 
-    const data = adminSpotSchema.parse({
+    const data = createAdminSpotSchema.parse({
         ...req.body,
         imageUrl: `/uploads/spots/${req.file.filename}`
     });
@@ -22,18 +22,20 @@ export const createSpot = asyncHandler(async (
     res.status(201).json(spot);
 });
 
-export const updateSpot = asyncHandler<SpotParams>(async (req, res) => {
+export const updateSpot = asyncHandler<SpotParams>(async (
+    req: Request<SpotParams, unknown, UpdateAdminSpotBody>, 
+    res: Response
+) => {
+  const data = updateAdminSpotSchema.parse({
+    ...req.body,
+    ...(req.file && {
+        imageUrl: `/uploads/spots/${req.file.filename}`,
+    }),
+  });
 
-    const imageUrl = req.file
-    ? `/uploads/spots/${req.file.filename}`
-    : undefined;
+  const spot = await updateAdminSpot(req.params.id, data);
 
-    const data = adminSpotSchema.parse({
-        ...req.body,
-        imageUrl,
-    });
-
-    const spot = await updateAdminSpot(req.params.id, data);
+  res.json(spot);
 });
 
 export const deleteSpot = asyncHandler<SpotParams>(async (req, res) => {
