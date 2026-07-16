@@ -1,8 +1,22 @@
 import { PrismaClient } from "@prisma/client";
+import "dotenv/config";
+import { hashPassword} from "../src/utils/password.js";
 
 const prisma = new PrismaClient();
 
 async function main() {
+
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminName = process.env.ADMIN_NAME;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if(!adminEmail || !adminName || !adminPassword) {
+        throw new Error(
+            "ADMIN_EMAIL, ADMIN_NAME and ADMIN_PASSWORD must be configured"
+        );
+    }
+
+    const passwordHash = await hashPassword(adminPassword);
 
     await prisma.reservation.deleteMany();
     await prisma.contactMessage.deleteMany();
@@ -10,6 +24,22 @@ async function main() {
     await prisma.spot.deleteMany();
     await prisma.newsItem.deleteMany();
     await prisma.faqItem.deleteMany();
+
+
+    await prisma.adminUser.upsert({
+        where: {
+            email: adminEmail,
+        },
+        update: {
+            name: adminName,
+            passwordHash,
+        },
+        create: {
+            email: adminEmail,
+            name: adminName,
+            passwordHash,
+        },
+    });
 
     await prisma.spot.create({
         data: {
@@ -82,9 +112,6 @@ async function main() {
         ],
     });
 
-    console.log("Database seeded");
-
-
     await prisma.faqItem.createMany({
         data: [
             {
@@ -109,6 +136,10 @@ async function main() {
             },
         ],
     });
+
+
+    
+    console.log("Database seeded");
 }
 
 
