@@ -12,6 +12,7 @@ import adminNewsRouter from "./routes/admin/news.js";
 
 import { errorHandler } from "./middleware/errorHandler.js";
 
+import authRouter from "./routes/auth.js";
 
 
 const app = express();
@@ -38,6 +39,9 @@ app.use("/api/reservations", reservationsRouter);
 //Admin
 app.use("/api/admin/spots", adminSpotsRouter);
 app.use("/api/admin/news", adminNewsRouter);
+
+// Auth
+app.use("/api/auth", authRouter);
 
 app.use(errorHandler);
 
