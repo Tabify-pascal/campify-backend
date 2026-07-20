@@ -1,5 +1,8 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+
+import authRouter from "./routes/auth.js";
 
 import spotsRouter from "./routes/spots.js";
 import newsRouter from "./routes/news.js";
@@ -12,14 +15,13 @@ import adminNewsRouter from "./routes/admin/news.js";
 
 import { errorHandler } from "./middleware/errorHandler.js";
 
-import authRouter from "./routes/auth.js";
-
-
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
+
 
 app.use(
     "/uploads",
