@@ -35,12 +35,12 @@ export const updateNews = asyncHandler<NewsParams>(async (
         }),
     });
 
-    const news = await updateAdminNews(req.params.id, data);
+    const news = await updateAdminNews(req.params.newsId, data);
 
     res.json(news);
 })
 
 export const deleteNews = asyncHandler<NewsParams>(async (req, res) => {
-    await deleteAdminNews(req.params.id);
+    await deleteAdminNews(req.params.newsId);
     res.status(204).send();
 })

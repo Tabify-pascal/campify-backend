@@ -33,12 +33,12 @@ export const updateSpot = asyncHandler<SpotParams>(async (
     }),
   });
 
-  const spot = await updateAdminSpot(req.params.id, data);
+  const spot = await updateAdminSpot(req.params.spotId, data);
 
   res.json(spot);
 });
 
 export const deleteSpot = asyncHandler<SpotParams>(async (req, res) => {
-    await deleteAdminSpot(req.params.id);
+    await deleteAdminSpot(req.params.spotId);
     res.status(204).send();
 });
