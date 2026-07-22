@@ -1,6 +1,14 @@
 node_modules
-uploads
-# Keep environment variables out of version control
+
+# Uploads
+uploads/news/*
+uploads/spots/*
+
+# Keep the folders
+!uploads/news/.gitkeep
+!uploads/spots/.gitkeep
+
+
 .env
 
 /generated/prisma

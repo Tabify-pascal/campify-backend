@@ -5,6 +5,7 @@ import { createAuthToken } from "../utils/authToken.js";
 import {
     getAuthenticatedUser, login,
 } from "../services/authService.js"
+import { assertAuthenticated } from "../middleware/assertAuthenticated.js";
 
 const cookieName = process.env.AUTH_COOKIE_NAME ?? "campify_admin";
 
@@ -46,13 +47,7 @@ export const getCurrentUser = asyncHandler(async (
     req: Request,
     res: Response
 ) => {
-    if (!req.auth) {
-        res.status(401).json({
-            error: "Unauthorized",
-        });
-
-        return;
-    }
+    assertAuthenticated(req);
 
     const admin = await getAuthenticatedUser(
         req.auth.userId
