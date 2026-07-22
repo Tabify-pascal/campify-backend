@@ -1,3 +1,3 @@
 export type NewsParams = {
-    id: string;
+    newsId: string;
 };

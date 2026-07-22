@@ -9,8 +9,8 @@ router.use(adminAuth);
 
 router.post("/", uploadNewsImage.single("image"), createNews);
 
-router.put("/:id", uploadNewsImage.single("image"), updateNews);
+router.put("/:newsId", uploadNewsImage.single("image"), updateNews);
 
-router.delete("/:id", deleteNews );
+router.delete("/:newsId", deleteNews );
 
 export default router;

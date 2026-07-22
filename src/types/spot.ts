@@ -1,3 +1,3 @@
 export type SpotParams = {
-    id: string;
+    spotId: string;
 }
