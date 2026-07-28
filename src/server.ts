@@ -13,6 +13,7 @@ import reservationsRouter from "./routes/reservations.js";
 import adminSpotsRouter from "./routes/admin/spots.js";
 import adminNewsRouter from "./routes/admin/news.js";
 import adminReservationRouter from "./routes/admin/reservations.js";
+import adminFaqRouter from "./routes/admin/faqs.js";
 
 import { errorHandler } from "./middleware/errorHandler.js";
 
@@ -53,6 +54,7 @@ app.use("/api/reservations", reservationsRouter);
 app.use("/api/admin/spots", adminSpotsRouter);
 app.use("/api/admin/news", adminNewsRouter);
 app.use("/api/admin/reservations", adminReservationRouter);
+app.use("/api/admin/faqs", adminFaqRouter);
 // Auth
 app.use("/api/auth", authRouter);
 
