@@ -4,6 +4,6 @@ import { getNewsItem, getNewsItems } from "../controllers/newsController.js";
 const router = Router();
 
 router.get("/", getNewsItems);
-router.get("/:id", getNewsItem);
+router.get("/:newsId", getNewsItem);
 
 export default router;

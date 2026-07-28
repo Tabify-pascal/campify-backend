@@ -8,8 +8,8 @@ export async function getAllNewsItems() {
     });
 }
 
-export async function getNewsItemById(id: string){
+export async function getNewsItemById(newsId: string){
     return prisma.newsItem.findUnique({
-        where: { id },
+        where: { id : newsId },
     });
 }

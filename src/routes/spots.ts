@@ -4,7 +4,7 @@ import { getAvailability, getSpot, getSpots} from "../controllers/spotsControlle
 const router = Router();
 
 router.get("/", getSpots);
-router.get("/:id/availability", getAvailability);
-router.get("/:id", getSpot);
+router.get("/:spotId/availability", getAvailability);
+router.get("/:spotId", getSpot);
 
 export default router;

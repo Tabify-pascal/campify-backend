@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { getAdminReservations, getAdminReservationById, deleteAdminReservation, updateAdminReservationStatus } from "../services/reservationAdminService.js";
 import { type Request, type Response } from "express";
-import { reservationStatusSchema, type ReservationStatusBody } from "../schemas/reservationStatusSchema.js";
+import { reservationStatusSchema } from "../schemas/reservationStatusSchema.js";
 import { type ReservationParams } from "../types/reservations.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 
@@ -11,7 +11,7 @@ export const getReservations = asyncHandler(async (
 ) => {
     const reservations = await getAdminReservations();
     res.json(reservations);
-})  
+});  
 
 export const getReservationById = asyncHandler<ReservationParams>(async(
     req: Request<ReservationParams>, res: Response
@@ -32,7 +32,7 @@ export const deleteReservation = asyncHandler<ReservationParams>(async (req, res
 
 export const updateReservationStatus = 
     asyncHandler<ReservationParams>(async (
-        req: Request<ReservationParams, unknown, ReservationStatusBody>,
+        req: Request<ReservationParams, unknown, unknown>,
         res: Response
 ) => {
     const data = reservationStatusSchema.parse(req.body);

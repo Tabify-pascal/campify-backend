@@ -7,7 +7,7 @@ import { spotSearchSchema } from "../schemas/spotSearchSchema.js";
 
 
 export const getSpot = asyncHandler<SpotParams>(async (req, res) => {
-    const spot = await getSpotById(req.params.id);
+    const spot = await getSpotById(req.params.spotId);
 
     if (!spot) {
         throw new NotFoundError("Spot");
@@ -20,7 +20,7 @@ export const getAvailability = asyncHandler<SpotParams>(async (req, res) => {
     const query = availabilityQuerySchema.parse(req.query);
 
     const availability = await getSpotAvailability(
-        req.params.id,
+        req.params.spotId,
         query.startDate,
         query.endDate
     );

@@ -13,7 +13,7 @@ export const getNewsItems = asyncHandler(async(_req: Request, res: Response) => 
 export const getNewsItem = asyncHandler<NewsParams>(async(
     req: Request<NewsParams>, res: Response
     ) => {
-    const newsItem = await getNewsItemById(req.params.id);
+    const newsItem = await getNewsItemById(req.params.newsId);
 
     if (!newsItem) {
         throw new NotFoundError("News item");

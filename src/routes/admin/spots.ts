@@ -9,8 +9,8 @@ router.use(adminAuth);
 
 router.post("/", uploadSpotImage.single("image"), createSpot);
 
-router.put("/:id", uploadSpotImage.single("image"), updateSpot);
+router.put("/:spotId", uploadSpotImage.single("image"), updateSpot);
 
-router.delete("/:id", deleteSpot);
+router.delete("/:spotId", deleteSpot);
 
 export default router;
