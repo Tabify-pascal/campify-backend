@@ -10,10 +10,13 @@ import faqRouter from "./routes/faq.js";
 import contactRouter from "./routes/contact.js";
 import reservationsRouter from "./routes/reservations.js";
 
+//ADMIN
+import adminDashboardRouter from "./routes/admin/dashboard.js";
 import adminSpotsRouter from "./routes/admin/spots.js";
 import adminNewsRouter from "./routes/admin/news.js";
 import adminReservationRouter from "./routes/admin/reservations.js";
 import adminFaqRouter from "./routes/admin/faqs.js";
+import adminContactRouter from "./routes/admin/contact.js";
 
 import { errorHandler } from "./middleware/errorHandler.js";
 
@@ -51,10 +54,13 @@ app.use("/api/faq", faqRouter);
 app.use("/api/contact", contactRouter);
 app.use("/api/reservations", reservationsRouter);
 //Admin
+app.use("/api/admin/dashboard", adminDashboardRouter);
 app.use("/api/admin/spots", adminSpotsRouter);
 app.use("/api/admin/news", adminNewsRouter);
 app.use("/api/admin/reservations", adminReservationRouter);
 app.use("/api/admin/faqs", adminFaqRouter);
+app.use("/api/admin/messages", adminContactRouter);
+
 // Auth
 app.use("/api/auth", authRouter);
 
