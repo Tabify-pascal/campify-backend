@@ -1,9 +1,9 @@
-import type { AuthUser } from "./auth.ts";
+import type { AuthAdmin } from "./auth.ts";
 
 declare global {
     namespace Express {
         interface Request {
-            auth?: AuthUser;
+            auth?: AuthAdmin;
         }
     }
 }
