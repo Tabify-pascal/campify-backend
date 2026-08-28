@@ -86,11 +86,19 @@ model FaqItem {
   answer   String
 }
 
-model AdminUser {
+enum UserRole {
+  ADMIN
+  CUSTOMER
+}
+
+model User {
   id           String   @id @default(cuid())
+  firstName    String
+  lastName     String
   email        String   @unique
-  name         String
   passwordHash String
+  role         UserRole @default(CUSTOMER)
+
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

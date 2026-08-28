@@ -1,45 +1,76 @@
 import { type Request, type Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { loginSchema, type LoginBody } from "../schemas/loginSchema.js";
+import {
+    loginSchema,
+    registerSchema,
+    type LoginBody,
+    type RegisterBody,
+} from "../schemas/authSchema.js";
 import { createAuthToken } from "../utils/authToken.js";
 import {
-    getAuthenticatedUser, login,
-} from "../services/authService.js"
+    getAuthenticatedUser,
+    login,
+    register,
+} from "../services/authService.js";
 import { assertAuthenticated } from "../middleware/assertAuthenticated.js";
 
-const cookieName = process.env.AUTH_COOKIE_NAME ?? "campify_admin";
+const cookieName =
+    process.env.AUTH_COOKIE_NAME ?? "campify_auth";
+
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax" as const,
+    maxAge: 8 * 60 * 60 * 1000,
+};
+
+export const registerUser = asyncHandler(async (
+    req: Request<
+        Record<string, never>,
+        unknown,
+        RegisterBody
+    >,
+    res: Response
+) => {
+    const data = registerSchema.parse(req.body);
+
+    const user = await register(data);
+
+    const token = await createAuthToken({
+        sub: user.id,
+        email: user.email,
+        role: user.role,
+    });
+
+    res.cookie(cookieName, token, cookieOptions);
+
+    res.status(201).json({
+        user,
+    });
+});
 
 export const loginUser = asyncHandler(async (
-    req: Request<Record<string, never>, unknown, LoginBody>,
+    req: Request<
+        Record<string, never>,
+        unknown,
+        LoginBody
+    >,
     res: Response
 ) => {
     const data = loginSchema.parse(req.body);
 
-    const admin = await login(
-        data.email,
-        data.password
-    );
+    const user = await login(data);
 
     const token = await createAuthToken({
-        sub: admin.id,
-        email: admin.email,
-        role: "admin",
+        sub: user.id,
+        email: user.email,
+        role: user.role,
     });
 
-    res.cookie(cookieName, token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 8 * 60 * 60 * 1000,
-    });
+    res.cookie(cookieName, token, cookieOptions);
 
     res.json({
-        user: {
-            id: admin.id,
-            name: admin.name,
-            email: admin.email,
-            role: "admin"
-        },
+        user,
     });
 });
 
@@ -49,20 +80,17 @@ export const getCurrentUser = asyncHandler(async (
 ) => {
     assertAuthenticated(req);
 
-    const admin = await getAuthenticatedUser(
+    const user = await getAuthenticatedUser(
         req.auth.userId
     );
 
     res.json({
-        user: {
-            ...admin,
-            role: "admin",
-        },
+        user,
     });
 });
 
-export const logoutUser = asyncHandler(async(
-    req: Request,
+export const logoutUser = asyncHandler(async (
+    _req: Request,
     res: Response
 ) => {
     res.clearCookie(cookieName, {

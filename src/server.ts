@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import authRouter from "./routes/auth.js";
+import accountRouter from "./routes/account.js";
 
 import spotsRouter from "./routes/spots.js";
 import newsRouter from "./routes/news.js";
@@ -63,6 +64,10 @@ app.use("/api/admin/messages", adminContactRouter);
 
 // Auth
 app.use("/api/auth", authRouter);
+
+// Account
+app.use("/api/account", accountRouter);
+
 
 app.use(errorHandler);
 

@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { SignJWT, jwtVerify } from "jose";
+import type { AuthUser } from "../types/user.js";
 
 const secret = process.env.AUTH_SECRET;
 
@@ -12,7 +13,7 @@ const secretKey = new TextEncoder().encode(secret);
 export type AuthTokenPayload = {
     sub: string;
     email: string;
-    role: "admin";
+    role: AuthUser["role"];
 };
 
 export async function createAuthToken(
@@ -22,20 +23,23 @@ export async function createAuthToken(
         email: payload.email,
         role: payload.role,
     })
-        .setProtectedHeader({ alg: "HS256"})
+        .setProtectedHeader({ alg: "HS256" })
         .setSubject(payload.sub)
         .setIssuedAt()
         .setExpirationTime("8h")
         .sign(secretKey);
 }
 
-export async function verifyAuthToken(token: string): Promise<AuthTokenPayload> {
+export async function verifyAuthToken(
+    token: string
+): Promise<AuthTokenPayload> {
     const { payload } = await jwtVerify(token, secretKey);
 
     if (
-        typeof payload.sub !== "string" || 
+        typeof payload.sub !== "string" ||
         typeof payload.email !== "string" ||
-        payload.role !== "admin"
+        (payload.role !== "ADMIN" &&
+            payload.role !== "CUSTOMER")
     ) {
         throw new Error("Invalid auth token payload");
     }
