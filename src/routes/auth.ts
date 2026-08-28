@@ -1,11 +1,20 @@
 import { Router } from "express";
-import { loginUser, getCurrentUser, logoutUser } from "../controllers/authController.js";
-import { adminAuth } from "../middleware/adminAuth.js";
+
+import {
+    registerUser,
+    loginUser,
+    logoutUser,
+    getCurrentUser,
+} from "../controllers/authController.js";
+
+import { requireAuth } from "../middleware/requireAuth.js";
 
 const router = Router();
 
+router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
-router.get("/me", adminAuth, getCurrentUser);
+
+router.get("/me", requireAuth, getCurrentUser);
 
 export default router;

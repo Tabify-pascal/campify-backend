@@ -64,6 +64,8 @@ app.use("/api/admin/messages", adminContactRouter);
 
 // Auth
 app.use("/api/auth", authRouter);
+
+// Account
 app.use("/api/account", accountRouter);
 
 

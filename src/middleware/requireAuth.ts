@@ -7,10 +7,9 @@ import {
 import { verifyAuthToken } from "../utils/authToken.js";
 
 const cookieName =
-    process.env.ACCOUNT_AUTH_COOKIE_NAME ??
-    "campify_customer";
+    process.env.AUTH_COOKIE_NAME ?? "campify_auth";
 
-export async function customerAuth(
+export async function requireAuth(
     req: Request,
     res: Response,
     next: NextFunction
@@ -27,14 +26,6 @@ export async function customerAuth(
 
     try {
         const payload = await verifyAuthToken(token);
-
-        if (payload.role !== "customer") {
-            res.status(403).json({
-                error: "Forbidden",
-            });
-
-            return;
-        }
 
         req.auth = {
             userId: payload.sub,

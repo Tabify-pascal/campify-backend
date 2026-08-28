@@ -7,37 +7,39 @@ const prisma = new PrismaClient();
 async function main() {
 
     const adminEmail = process.env.ADMIN_EMAIL;
-    const adminName = process.env.ADMIN_NAME;
+    const adminFirstName = process.env.ADMIN_FIRST_NAME;
+    const adminLastName = process.env.ADMIN_LAST_NAME;
     const adminPassword = process.env.ADMIN_PASSWORD;
 
-    if(!adminEmail || !adminName || !adminPassword) {
+    if (
+        !adminEmail ||
+        !adminFirstName ||
+        !adminLastName ||
+        !adminPassword
+    ) {
         throw new Error(
-            "ADMIN_EMAIL, ADMIN_NAME and ADMIN_PASSWORD must be configured"
+            "Admin environment variables must be configured"
         );
     }
 
     const passwordHash = await hashPassword(adminPassword);
 
-    await prisma.reservation.deleteMany();
-    await prisma.contactMessage.deleteMany();
-    await prisma.spotFeature.deleteMany();
-    await prisma.spot.deleteMany();
-    await prisma.newsItem.deleteMany();
-    await prisma.faqItem.deleteMany();
-
-
-    await prisma.adminUser.upsert({
+    await prisma.user.upsert({
         where: {
             email: adminEmail,
         },
         update: {
-            name: adminName,
+            firstName: adminFirstName,
+            lastName: adminLastName,
             passwordHash,
+            role: "ADMIN",
         },
         create: {
             email: adminEmail,
-            name: adminName,
+            firstName: adminFirstName,
+            lastName: adminLastName,
             passwordHash,
+            role: "ADMIN",
         },
     });
 

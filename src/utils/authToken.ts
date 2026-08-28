@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { SignJWT, jwtVerify } from "jose";
-import type { AuthUser } from "../types/auth.js";
+import type { AuthUser } from "../types/user.js";
 
 const secret = process.env.AUTH_SECRET;
 
@@ -38,7 +38,8 @@ export async function verifyAuthToken(
     if (
         typeof payload.sub !== "string" ||
         typeof payload.email !== "string" ||
-        (payload.role !== "admin" && payload.role !== "customer")
+        (payload.role !== "ADMIN" &&
+            payload.role !== "CUSTOMER")
     ) {
         throw new Error("Invalid auth token payload");
     }
