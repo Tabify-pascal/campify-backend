@@ -2,8 +2,11 @@ import { z } from "zod";
 
 export const spotSearchSchema = z
     .object({
+        campingId: z.string().optional(),
+
         arrivalDate: z.coerce.date().optional(),
         departureDate: z.coerce.date().optional(),
+
         guests: z.coerce.number().int().min(1).optional(),
     })
     .refine(
@@ -17,4 +20,5 @@ export const spotSearchSchema = z
         }
     );
 
-export type SpotSearchQuery = z.infer<typeof spotSearchSchema>;
+export type SpotSearchQuery =
+    z.infer<typeof spotSearchSchema>;

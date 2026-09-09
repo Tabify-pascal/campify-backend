@@ -2,17 +2,22 @@ import { prisma } from "../prisma.js";
 import { type SpotAvailability } from "../types/availability.js";
 import { type SpotSearchQuery } from "../schemas/spotSearchSchema.js";
 
-export async function getAllSpots(query?: SpotSearchQuery){
+export async function getAllSpots(query?: SpotSearchQuery) {
     return prisma.spot.findMany({
         where: {
+            ...(query?.campingId
+                ? {
+                    campingId: query.campingId,
+                }
+                : {}),
+
             ...(query?.guests
                 ? {
                     capacity: {
                         gte: query.guests,
                     },
                 }
-                : {}
-            ),
+                : {}),
 
             ...(query?.arrivalDate && query?.departureDate
                 ? {
@@ -29,20 +34,39 @@ export async function getAllSpots(query?: SpotSearchQuery){
                             },
                         },
                     },
-                } : {}
-            ),
+                }
+                : {}),
         },
+
         include: {
             features: true,
+
+            camping: {
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                },
+            },
         },
     });
 }
 
 export async function getSpotById(id: string) {
     return prisma.spot.findUnique({
-        where: { id },
+        where: {
+            id,
+        },
         include: {
             features: true,
+
+            camping: {
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                },
+            },
         },
     });
 }

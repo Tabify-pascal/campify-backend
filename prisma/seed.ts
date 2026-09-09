@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import "dotenv/config";
-import { hashPassword} from "../src/utils/password.js";
+
+import { hashPassword } from "../src/utils/password.js";
 
 const prisma = new PrismaClient();
 
 async function main() {
-
     const adminEmail = process.env.ADMIN_EMAIL;
     const adminFirstName = process.env.ADMIN_FIRST_NAME;
     const adminLastName = process.env.ADMIN_LAST_NAME;
@@ -43,8 +43,35 @@ async function main() {
         },
     });
 
+    await prisma.reservation.deleteMany();
+    await prisma.contactMessage.deleteMany();
+    await prisma.spotFeature.deleteMany();
+    await prisma.spot.deleteMany();
+    await prisma.camping.deleteMany();
+    await prisma.newsItem.deleteMany();
+    await prisma.faqItem.deleteMany();
+
+    const bosCamping = await prisma.camping.create({
+        data: {
+            name: "Camping De Bosrand",
+            slug: "camping-de-bosrand",
+            description: "Een rustige camping midden in het groen.",
+            logoUrl: "/images/campings/de-bosrand.png",
+        },
+    });
+
+    const meerCamping = await prisma.camping.create({
+        data: {
+            name: "Camping Het Meer",
+            slug: "camping-het-meer",
+            description: "Kamperen aan het water met uitzicht over het meer.",
+            logoUrl: "/images/campings/het-meer.png",
+        },
+    });
+
     await prisma.spot.create({
         data: {
+            campingId: bosCamping.id,
             name: "Boszicht",
             description: "Ruime kampeerplaats aan de bosrand.",
             capacity: 6,
@@ -66,6 +93,7 @@ async function main() {
 
     await prisma.spot.create({
         data: {
+            campingId: meerCamping.id,
             name: "Meerzicht",
             description: "Geniet van een prachtig uitzicht over het meer.",
             capacity: 4,
@@ -130,20 +158,19 @@ async function main() {
             },
             {
                 question: "Is er stroom op de kampeerplaatsen?",
-                answer: "Een deel van de kampeerplaatsen heeft stroom. Dit staat per plek aangegeven.",
+                answer:
+                    "Een deel van de kampeerplaatsen heeft stroom. Dit staat per plek aangegeven.",
             },
             {
                 question: "Kan ik mijn reservering wijzigen?",
-                answer: "Neem contact met ons op, dan kijken we samen naar de mogelijkheden.",
+                answer:
+                    "Neem contact met ons op, dan kijken we samen naar de mogelijkheden.",
             },
         ],
     });
 
-
-    
     console.log("Database seeded");
 }
-
 
 main()
     .catch((error) => {
