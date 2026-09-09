@@ -1,1 +1,0 @@
-{"version":3,"file":"assertAuthenticated.js","sourceRoot":"","sources":["../../src/middleware/assertAuthenticated.ts"],"names":[],"mappings":"AAAA,OAAO,EAAgB,MAAM,SAAS,CAAC;AACvC,OAAO,EAAiB,MAAM,kBAAkB,CAAC;AAEjD,MAAM,UAAU,mBAAmB,CAC/B,GAAY;IAEZ,IAAI,CAAC,GAAG,CAAC,IAAI,EAAE,CAAC;QACZ,MAAM,IAAI,KAAK,CAAC,mCAAmC,CAAC,CAAC;IACzD,CAAC;AACL,CAAC"}
