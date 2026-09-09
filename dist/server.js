@@ -25,8 +25,22 @@ app.use(cors({
     origin: process.env.FRONTEND_URL ?? "http://localhost:5173",
     credentials: true,
 }));
+
 app.use(express.json());
 app.use(cookieParser());
+
+app.use((req, _res, next) => {
+    console.log("REQUEST DEBUG", {
+        method: req.method,
+        originalUrl: req.originalUrl,
+        url: req.url,
+        baseUrl: req.baseUrl,
+        path: req.path,
+    });
+
+    next();
+});
+
 app.use("/uploads", express.static("uploads"));
 app.get("/api/health", (_req, res) => {
     res.json({ status: "ok" });
