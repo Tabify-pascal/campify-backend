@@ -6,7 +6,7 @@ import {
 
 import type { UserRole } from "../types/user.js";
 
-export function requireRole(role: UserRole) {
+export function requireRole(...roles: UserRole[]) {
     return (
         req: Request,
         res: Response,
@@ -20,7 +20,7 @@ export function requireRole(role: UserRole) {
             return;
         }
 
-        if (req.auth.role !== role) {
+        if (!roles.includes(req.auth.role)) {
             res.status(403).json({
                 error: "Forbidden",
             });

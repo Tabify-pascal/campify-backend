@@ -4,6 +4,8 @@ import {
     type UpdateAdminSpotBody,
 } from "../schemas/adminSpotSchema.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
+import type { UserRole } from "../types/user.js";
+import { assertCanManageCamping } from "../utils/assertCanManageCamping.js";
 
 const spotInclude = {
     features: true,
@@ -16,18 +18,67 @@ const spotInclude = {
     },
 };
 
-export function getAdminSpotById(id: string) {
-    return prisma.spot.findUnique({
-        where: { id },
+export async function getAdminSpots(
+    userId: string,
+    role: UserRole
+) {
+    return prisma.spot.findMany({
+        where:
+            role === "ADMIN"
+                ? {}
+                : {
+                    camping: {
+                        managers: {
+                            some: {
+                                userId,
+                            },
+                        },
+                    },
+                },
         include: spotInclude,
+        orderBy: {
+            name: "asc",
+        },
     });
 }
 
-export async function createAdminSpot(data: CreateAdminSpotBody) {
+export async function getAdminSpotById(
+    id: string,
+    userId: string,
+    role: UserRole
+) {
+    const spot = await prisma.spot.findUnique({
+        where: { id },
+        include: spotInclude,
+    });
+
+    if (!spot) {
+        throw new NotFoundError("Spot");
+    }
+
+    await assertCanManageCamping(
+        userId,
+        role,
+        spot.campingId
+    );
+
+    return spot;
+}
+
+export async function createAdminSpot(
+    data: CreateAdminSpotBody,
+    userId: string,
+    role: UserRole
+) {
+    await assertCanManageCamping(
+        userId,
+        role,
+        data.campingId
+    );
+
     return prisma.spot.create({
         data: {
             campingId: data.campingId,
-
             name: data.name,
             description: data.description,
             capacity: data.capacity,
@@ -49,7 +100,9 @@ export async function createAdminSpot(data: CreateAdminSpotBody) {
 
 export async function updateAdminSpot(
     id: string,
-    data: UpdateAdminSpotBody
+    data: UpdateAdminSpotBody,
+    userId: string,
+    role: UserRole
 ) {
     const existingSpot = await prisma.spot.findUnique({
         where: { id },
@@ -58,6 +111,18 @@ export async function updateAdminSpot(
     if (!existingSpot) {
         throw new NotFoundError("Spot");
     }
+
+    await assertCanManageCamping(
+        userId,
+        role,
+        existingSpot.campingId
+    );
+
+    await assertCanManageCamping(
+        userId,
+        role,
+        data.campingId
+    );
 
     return prisma.$transaction(async (tx) => {
         await tx.spotFeature.deleteMany({
@@ -70,7 +135,6 @@ export async function updateAdminSpot(
             where: { id },
             data: {
                 campingId: data.campingId,
-
                 name: data.name,
                 description: data.description,
                 capacity: data.capacity,
@@ -92,7 +156,11 @@ export async function updateAdminSpot(
     });
 }
 
-export async function deleteAdminSpot(id: string) {
+export async function deleteAdminSpot(
+    id: string,
+    userId: string,
+    role: UserRole
+) {
     const spot = await prisma.spot.findUnique({
         where: { id },
     });
@@ -100,6 +168,12 @@ export async function deleteAdminSpot(id: string) {
     if (!spot) {
         throw new NotFoundError("Spot");
     }
+
+    await assertCanManageCamping(
+        userId,
+        role,
+        spot.campingId
+    );
 
     await prisma.spot.delete({
         where: { id },
