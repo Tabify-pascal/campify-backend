@@ -81,6 +81,17 @@ apiRouter.use("/admin/campings", adminCampingRouter);
 // Mount the entire API once
 app.use(`${APP_BASE_PATH}/api`, apiRouter);
 
+app.use((req, res) => {
+    res.status(404).json({
+        message: "Route not found",
+        originalUrl: req.originalUrl,
+        url: req.url,
+        baseUrl: req.baseUrl,
+        path: req.path,
+        appBasePath: APP_BASE_PATH,
+    });
+});
+
 app.use(errorHandler);
 
 app.listen(PORT, () => {
