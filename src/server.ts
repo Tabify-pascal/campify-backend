@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -10,8 +10,9 @@ import newsRouter from "./routes/news.js";
 import faqRouter from "./routes/faq.js";
 import contactRouter from "./routes/contact.js";
 import reservationsRouter from "./routes/reservations.js";
+import campingRouter from "./routes/campings.js";
 
-//ADMIN
+// Admin
 import adminDashboardRouter from "./routes/admin/dashboard.js";
 import adminSpotsRouter from "./routes/admin/spots.js";
 import adminNewsRouter from "./routes/admin/news.js";
@@ -19,18 +20,20 @@ import adminReservationRouter from "./routes/admin/reservations.js";
 import adminFaqRouter from "./routes/admin/faqs.js";
 import adminContactRouter from "./routes/admin/contact.js";
 import adminCampingRouter from "./routes/admin/campings.js";
-import campingRouter from "./routes/campings.js";
 
 import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
-const PORT = 3000;
+const apiRouter = Router();
 
-//app.use(cors());
+const PORT = Number(process.env.PORT) || 3000;
+const APP_BASE_PATH = process.env.APP_BASE_PATH ?? "";
 
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL ?? "http://localhost:5173",
+        origin:
+            process.env.FRONTEND_URL ??
+            "http://localhost:5173",
         credentials: true,
     })
 );
@@ -38,42 +41,71 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-
+// Static uploads
 app.use(
-    "/uploads",
+    `${APP_BASE_PATH}/uploads`,
     express.static("uploads")
 );
 
-
-
-app.get("/api/health", (_req, res) =>
-{
-    res.json({ status: "ok"});
+// Health
+apiRouter.get("/health", (_req, res) => {
+    res.json({
+        status: "ok",
+    });
 });
 
-app.use("/api/spots", spotsRouter);
-app.use("/api/news", newsRouter);
-app.use("/api/faq", faqRouter);
-app.use("/api/contact", contactRouter);
-app.use("/api/reservations", reservationsRouter);
-app.use("/api/campings", campingRouter);
-//Admin
-app.use("/api/admin/dashboard", adminDashboardRouter);
-app.use("/api/admin/spots", adminSpotsRouter);
-app.use("/api/admin/news", adminNewsRouter);
-app.use("/api/admin/reservations", adminReservationRouter);
-app.use("/api/admin/faqs", adminFaqRouter);
-app.use("/api/admin/messages", adminContactRouter);
-app.use("/api/admin/campings", adminCampingRouter);
+// Public
+apiRouter.use("/spots", spotsRouter);
+apiRouter.use("/news", newsRouter);
+apiRouter.use("/faq", faqRouter);
+apiRouter.use("/contact", contactRouter);
+apiRouter.use("/reservations", reservationsRouter);
+apiRouter.use("/campings", campingRouter);
+
 // Auth
-app.use("/api/auth", authRouter);
+apiRouter.use("/auth", authRouter);
 
 // Account
-app.use("/api/account", accountRouter);
+apiRouter.use("/account", accountRouter);
 
+// Admin
+apiRouter.use(
+    "/admin/dashboard",
+    adminDashboardRouter
+);
+apiRouter.use("/admin/spots", adminSpotsRouter);
+apiRouter.use("/admin/news", adminNewsRouter);
+apiRouter.use(
+    "/admin/reservations",
+    adminReservationRouter
+);
+apiRouter.use("/admin/faqs", adminFaqRouter);
+apiRouter.use(
+    "/admin/messages",
+    adminContactRouter
+);
+apiRouter.use(
+    "/admin/campings",
+    adminCampingRouter
+);
+
+// Mount API once
+app.use(`${APP_BASE_PATH}/api`, apiRouter);
+
+// Temporary routing debug
+app.use((req, res) => {
+    res.status(404).json({
+        message: "Route not found",
+        originalUrl: req.originalUrl,
+        url: req.url,
+        baseUrl: req.baseUrl,
+        path: req.path,
+        appBasePath: APP_BASE_PATH,
+    });
+});
 
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-    console.log("Api running on http://localhost:3000");
+    console.log(`API running on port ${PORT}`);
 });
