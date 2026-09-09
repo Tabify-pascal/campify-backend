@@ -1,0 +1,1 @@
+{"version":3,"file":"reservationStatusSchema.js","sourceRoot":"","sources":["../../src/schemas/reservationStatusSchema.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,CAAC,EAAE,MAAM,KAAK,CAAC;AAExB,MAAM,CAAC,MAAM,uBAAuB,GAAG,CAAC,CAAC,MAAM,CAAC;IAC5C,MAAM,EAAE,CAAC,CAAC,IAAI,CAAC;QACX,SAAS;QACT,WAAW;QACX,WAAW;KACd,CAAC;CACL,CAAC,CAAC"}

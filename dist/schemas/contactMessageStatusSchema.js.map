@@ -1,0 +1,1 @@
+{"version":3,"file":"contactMessageStatusSchema.js","sourceRoot":"","sources":["../../src/schemas/contactMessageStatusSchema.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,CAAC,EAAE,MAAM,KAAK,CAAC;AAExB,MAAM,CAAC,MAAM,0BAA0B,GAAG,CAAC,CAAC,MAAM,CAAC;IAC/C,MAAM,EAAE,CAAC,CAAC,IAAI,CAAC;QACX,KAAK;QACL,MAAM;QACN,QAAQ;KACX,CAAC;CACL,CAAC,CAAC"}

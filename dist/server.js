@@ -1,0 +1,56 @@
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import authRouter from "./routes/auth.js";
+import accountRouter from "./routes/account.js";
+import spotsRouter from "./routes/spots.js";
+import newsRouter from "./routes/news.js";
+import faqRouter from "./routes/faq.js";
+import contactRouter from "./routes/contact.js";
+import reservationsRouter from "./routes/reservations.js";
+//ADMIN
+import adminDashboardRouter from "./routes/admin/dashboard.js";
+import adminSpotsRouter from "./routes/admin/spots.js";
+import adminNewsRouter from "./routes/admin/news.js";
+import adminReservationRouter from "./routes/admin/reservations.js";
+import adminFaqRouter from "./routes/admin/faqs.js";
+import adminContactRouter from "./routes/admin/contact.js";
+import adminCampingRouter from "./routes/admin/campings.js";
+import campingRouter from "./routes/campings.js";
+import { errorHandler } from "./middleware/errorHandler.js";
+const app = express();
+const PORT = 3000;
+//app.use(cors());
+app.use(cors({
+    origin: process.env.FRONTEND_URL ?? "http://localhost:5173",
+    credentials: true,
+}));
+app.use(express.json());
+app.use(cookieParser());
+app.use("/uploads", express.static("uploads"));
+app.get("/api/health", (_req, res) => {
+    res.json({ status: "ok" });
+});
+app.use("/api/spots", spotsRouter);
+app.use("/api/news", newsRouter);
+app.use("/api/faq", faqRouter);
+app.use("/api/contact", contactRouter);
+app.use("/api/reservations", reservationsRouter);
+app.use("/api/campings", campingRouter);
+//Admin
+app.use("/api/admin/dashboard", adminDashboardRouter);
+app.use("/api/admin/spots", adminSpotsRouter);
+app.use("/api/admin/news", adminNewsRouter);
+app.use("/api/admin/reservations", adminReservationRouter);
+app.use("/api/admin/faqs", adminFaqRouter);
+app.use("/api/admin/messages", adminContactRouter);
+app.use("/api/admin/campings", adminCampingRouter);
+// Auth
+app.use("/api/auth", authRouter);
+// Account
+app.use("/api/account", accountRouter);
+app.use(errorHandler);
+app.listen(PORT, () => {
+    console.log("Api running on http://localhost:3000");
+});
+//# sourceMappingURL=server.js.map
