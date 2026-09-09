@@ -1,5 +1,11 @@
-node_modules
+node_modules/
 dist/
+
+.env
+
+# Local SQLite database
+prisma/dev.db
+
 # Uploads
 uploads/news/*
 uploads/spots/*
@@ -7,8 +13,5 @@ uploads/spots/*
 # Keep the folders
 !uploads/news/.gitkeep
 !uploads/spots/.gitkeep
-
-
-.env
 
 /generated/prisma
