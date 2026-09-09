@@ -10,6 +10,7 @@ const adminSpotBaseSchema = z.object({
     capacity: z.coerce.number().int().min(1),
     pricePerNight: z.coerce.number().int().min(1),
     size: z.coerce.number().int().min(1),
+    campingId: z.string().min(1),
     electricity: formBoolean,
     waterConnection: formBoolean,
     features: z

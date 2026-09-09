@@ -18,6 +18,8 @@ import adminNewsRouter from "./routes/admin/news.js";
 import adminReservationRouter from "./routes/admin/reservations.js";
 import adminFaqRouter from "./routes/admin/faqs.js";
 import adminContactRouter from "./routes/admin/contact.js";
+import adminCampingRouter from "./routes/admin/campings.js";
+import campingRouter from "./routes/campings.js";
 
 import { errorHandler } from "./middleware/errorHandler.js";
 
@@ -54,6 +56,7 @@ app.use("/api/news", newsRouter);
 app.use("/api/faq", faqRouter);
 app.use("/api/contact", contactRouter);
 app.use("/api/reservations", reservationsRouter);
+app.use("/api/campings", campingRouter);
 //Admin
 app.use("/api/admin/dashboard", adminDashboardRouter);
 app.use("/api/admin/spots", adminSpotsRouter);
@@ -61,7 +64,7 @@ app.use("/api/admin/news", adminNewsRouter);
 app.use("/api/admin/reservations", adminReservationRouter);
 app.use("/api/admin/faqs", adminFaqRouter);
 app.use("/api/admin/messages", adminContactRouter);
-
+app.use("/api/admin/campings", adminCampingRouter);
 // Auth
 app.use("/api/auth", authRouter);
 
