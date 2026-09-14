@@ -6,7 +6,7 @@ import { getContactMessages, getContactMessageById, updateContactMessageStatus, 
 const router = Router();
 
 router.use(requireAuth);
-router.use(requireRole("ADMIN"));
+router.use(requireRole("ADMIN", "MANAGER"));
 
 router.get("/", getContactMessages);
 router.get("/:messageId", getContactMessageById);

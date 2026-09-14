@@ -38,8 +38,11 @@ export async function verifyAuthToken(
     if (
         typeof payload.sub !== "string" ||
         typeof payload.email !== "string" ||
-        (payload.role !== "ADMIN" &&
-            payload.role !== "CUSTOMER")
+        (
+            payload.role !== "ADMIN" &&
+            payload.role !== "CUSTOMER" &&
+            payload.role !== "MANAGER"
+        )
     ) {
         throw new Error("Invalid auth token payload");
     }

@@ -1,8 +1,12 @@
 import { type Request, type Response } from "express";
 
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { adminCampingSchema, type AdminCampingBody } from "../schemas/adminCampingSchema.js";
+import {
+    adminCampingSchema,
+    type AdminCampingBody,
+} from "../schemas/adminCampingSchema.js";
 import { type CampingParams } from "../types/camping.js";
+import { assertAuthenticated } from "../middleware/assertAuthenticated.js";
 
 import {
     getAdminCampings,
@@ -13,10 +17,15 @@ import {
 } from "../services/adminCampingService.js";
 
 export const getCampings = asyncHandler(async (
-    _req: Request,
+    req: Request,
     res: Response
 ) => {
-    const campings = await getAdminCampings();
+    assertAuthenticated(req);
+
+    const campings = await getAdminCampings(
+        req.auth.userId,
+        req.auth.role
+    );
 
     res.json(campings);
 });
@@ -26,8 +35,12 @@ export const getCampingById =
         req: Request<CampingParams>,
         res: Response
     ) => {
+        assertAuthenticated(req);
+
         const camping = await getAdminCampingById(
-            req.params.campingId
+            req.params.campingId,
+            req.auth.userId,
+            req.auth.role
         );
 
         res.json(camping);
@@ -57,11 +70,15 @@ export const updateCamping =
         >,
         res: Response
     ) => {
+        assertAuthenticated(req);
+
         const data = adminCampingSchema.parse(req.body);
 
         const camping = await updateAdminCamping(
             req.params.campingId,
-            data
+            data,
+            req.auth.userId,
+            req.auth.role
         );
 
         res.json(camping);
