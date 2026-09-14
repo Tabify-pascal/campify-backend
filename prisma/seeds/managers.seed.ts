@@ -7,9 +7,23 @@ export async function seedManagers(
     prisma: PrismaClient,
     campings: SeedCampings
 ) {
-    const passwordHash = await hashPassword(
-        "dummy-manager-password"
-    );
+    const bosManagerPassword =
+        process.env.MANAGER_BOSRAND_PASSWORD;
+
+    const meerManagerPassword =
+        process.env.MANAGER_MEER_PASSWORD;
+
+    if (!bosManagerPassword || !meerManagerPassword) {
+        throw new Error(
+            "Manager environment variables must be configured"
+        );
+    }
+
+    const bosManagerPasswordHash =
+        await hashPassword(bosManagerPassword);
+
+    const meerManagerPasswordHash =
+        await hashPassword(meerManagerPassword);
 
     const bosManager = await prisma.user.upsert({
         where: {
@@ -18,14 +32,14 @@ export async function seedManagers(
         update: {
             firstName: "Manager",
             lastName: "Bosrand",
-            passwordHash,
+            passwordHash: bosManagerPasswordHash,
             role: "MANAGER",
         },
         create: {
             firstName: "Manager",
             lastName: "Bosrand",
             email: "pascalthomasse@hotmail.com",
-            passwordHash,
+            passwordHash: bosManagerPasswordHash,
             role: "MANAGER",
         },
     });
@@ -37,14 +51,14 @@ export async function seedManagers(
         update: {
             firstName: "Manager",
             lastName: "Het Meer",
-            passwordHash,
+            passwordHash: meerManagerPasswordHash,
             role: "MANAGER",
         },
         create: {
             firstName: "Manager",
             lastName: "Het Meer",
             email: "pascalthomasse@outlook.com",
-            passwordHash,
+            passwordHash: meerManagerPasswordHash,
             role: "MANAGER",
         },
     });

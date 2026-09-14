@@ -16,6 +16,7 @@ model Camping {
 
   managers    CampingManager[]
   spots       Spot[]
+  messages    ContactMessage[]
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -86,14 +87,19 @@ enum ContactMessageStatus {
 }
 
 model ContactMessage {
-  id        String                @id @default(cuid())
+  id        String               @id @default(cuid())
+
+  campingId String
+  camping   Camping              @relation(fields: [campingId], references: [id])
+
   name      String
   email     String
   subject   String?
   message   String
-  status    ContactMessageStatus  @default(NEW)
-  createdAt DateTime              @default(now())
-  updatedAt DateTime              @updatedAt
+  status    ContactMessageStatus @default(NEW)
+
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
 }
 
 

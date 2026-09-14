@@ -7,7 +7,7 @@ import { getDashboardSummary } from "../../controllers/adminDashboardController.
 const router = Router();
 
 router.use(requireAuth);
-router.use(requireRole("ADMIN"));
+router.use(requireRole("ADMIN", "MANAGER"));
 
 router.get("/", getDashboardSummary);
 

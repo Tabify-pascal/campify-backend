@@ -1,16 +1,37 @@
 import { prisma } from "../prisma.js";
-import { NotFoundError } from "../errors/NotFoundError.js";
+import type { UserRole } from "../types/user.js";
 import type { AdminCampingBody } from "../schemas/adminCampingSchema.js";
 
-export async function getAdminCampings() {
+import { NotFoundError } from "../errors/NotFoundError.js";
+import { assertCanManageCamping } from "../utils/assertCanManageCamping.js";
+
+export async function getAdminCampings(
+    userId: string,
+    role: UserRole
+) {
     return prisma.camping.findMany({
+        where:
+            role === "ADMIN"
+                ? {}
+                : {
+                    managers: {
+                        some: {
+                            userId,
+                        },
+                    },
+                },
+
         orderBy: {
             name: "asc",
         },
     });
 }
 
-export async function getAdminCampingById(campingId: string) {
+export async function getAdminCampingById(
+    campingId: string,
+    userId: string,
+    role: UserRole
+) {
     const camping = await prisma.camping.findUnique({
         where: {
             id: campingId,
@@ -20,6 +41,12 @@ export async function getAdminCampingById(campingId: string) {
     if (!camping) {
         throw new NotFoundError("Camping");
     }
+
+    await assertCanManageCamping(
+        userId,
+        role,
+        campingId
+    );
 
     return camping;
 }
@@ -43,20 +70,15 @@ export async function createAdminCamping(
 
 export async function updateAdminCamping(
     campingId: string,
-    data: AdminCampingBody
+    data: AdminCampingBody,
+    userId: string,
+    role: UserRole
 ) {
-    const existingCamping = await prisma.camping.findUnique({
-        where: {
-            id: campingId,
-        },
-        select: {
-            id: true,
-        },
-    });
-
-    if (!existingCamping) {
-        throw new NotFoundError("Camping");
-    }
+    await assertCanManageCamping(
+        userId,
+        role,
+        campingId
+    );
 
     return prisma.camping.update({
         where: {
@@ -65,11 +87,11 @@ export async function updateAdminCamping(
         data: {
             name: data.name,
             slug: data.slug,
-            ...(data.logoUrl !== undefined
-                ? { logoUrl: data.logoUrl }
-                : {}),
             ...(data.description !== undefined
                 ? { description: data.description }
+                : {}),
+            ...(data.logoUrl !== undefined
+                ? { logoUrl: data.logoUrl }
                 : {}),
         },
     });
