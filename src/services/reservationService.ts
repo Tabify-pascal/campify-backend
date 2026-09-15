@@ -2,6 +2,7 @@ import { type ReservationBody } from "../schemas/reservationSchema.js";
 import { prisma } from "../prisma.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 import { ValidationError } from "../errors/ValidationError.js";
+import { sendReservationManagerNotification } from "./reservationNotificationService.js";
 
 export async function createReservation(data: ReservationBody) {
     const spot = await prisma.spot.findUnique({
@@ -12,7 +13,7 @@ export async function createReservation(data: ReservationBody) {
         throw new NotFoundError("Spot");
     }
 
-    if (data.guests > spot.capacity){
+    if (data.guests > spot.capacity) {
         throw new Error("Too many guests for this camping spot");
     }
 
@@ -22,7 +23,7 @@ export async function createReservation(data: ReservationBody) {
             arrivalDate: {
                 lt: data.departureDate,
             },
-            departureDate: { 
+            departureDate: {
                 gt: data.arrivalDate,
             },
         },
@@ -34,17 +35,33 @@ export async function createReservation(data: ReservationBody) {
         );
     }
 
-    return prisma.reservation.create({
+    const reservation = await prisma.reservation.create({
         data: {
             spotId: data.spotId,
             firstName: data.firstName,
-            lastName: data.lastName, 
+            lastName: data.lastName,
             email: data.email,
             phone: data.phone,
             guests: data.guests,
             arrivalDate: data.arrivalDate,
             departureDate: data.departureDate,
-            ...(data.notes ? {notes: data.notes} : {}),
+            ...(data.notes ? { notes: data.notes } : {}),
         },
     });
+
+    try {
+        await sendReservationManagerNotification(
+            reservation.id
+        );
+    } catch (error) {
+        console.error(
+            "Failed to send reservation manager notification",
+            {
+                reservationId: reservation.id,
+                error,
+            }
+        );
+    }
+
+    return reservation;
 }
