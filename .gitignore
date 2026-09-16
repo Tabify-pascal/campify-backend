@@ -15,3 +15,5 @@ uploads/spots/*
 !uploads/spots/.gitkeep
 
 /generated/prisma
+
+logs/
