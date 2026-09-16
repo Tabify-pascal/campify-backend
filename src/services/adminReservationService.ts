@@ -1,7 +1,7 @@
 import { prisma } from "../prisma.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 import { assertCanManageCamping } from "../utils/assertCanManageCamping.js";
-
+import { sendReservationStatusNotification } from "./reservationNotificationService.js";
 import type { ReservationStatus } from "@prisma/client";
 import type { UserRole } from "../types/user.js";
 
@@ -117,6 +117,7 @@ export async function updateAdminReservationStatus(
             where: { id },
             select: {
                 id: true,
+                status: true,
                 spot: {
                     select: {
                         campingId: true,
@@ -135,11 +136,37 @@ export async function updateAdminReservationStatus(
         existingReservation.spot.campingId
     );
 
-    return prisma.reservation.update({
+    // Niets veranderd? Dan ook geen mail sturen.
+    if (existingReservation.status === status) {
+        return prisma.reservation.findUnique({
+            where: { id },
+            include: reservationInclude,
+        });
+    }
+
+    const reservation = await prisma.reservation.update({
         where: { id },
         data: {
             status,
         },
         include: reservationInclude,
     });
+
+    try {
+        await sendReservationStatusNotification(
+            reservation.id,
+            status
+        );
+    } catch (error) {
+        console.error(
+            "Failed to send reservation status notification",
+            {
+                reservationId: reservation.id,
+                status,
+                error,
+            }
+        );
+    }
+
+    return reservation;
 }
