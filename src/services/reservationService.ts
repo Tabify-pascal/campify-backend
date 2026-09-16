@@ -2,7 +2,7 @@ import { type ReservationBody } from "../schemas/reservationSchema.js";
 import { prisma } from "../prisma.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 import { ValidationError } from "../errors/ValidationError.js";
-import { sendReservationManagerNotification } from "./reservationNotificationService.js";
+import { sendReservationNotifications } from "./reservationNotificationService.js";
 
 export async function createReservation(data: ReservationBody) {
     const spot = await prisma.spot.findUnique({
@@ -50,7 +50,7 @@ export async function createReservation(data: ReservationBody) {
     });
 
     try {
-        await sendReservationManagerNotification(
+        await sendReservationNotifications(
             reservation.id
         );
     } catch (error) {
