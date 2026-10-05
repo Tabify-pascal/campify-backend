@@ -23,21 +23,23 @@ model Camping {
 }
 
 model Spot {
-  id              String   @id @default(cuid())
-  campingId       String
+  id                String   @id @default(cuid())
+  campingId         String
 
-  name            String
-  description     String
-  capacity        Int
-  pricePerNight   Int
-  imageUrl        String
-  size            Int
-  electricity     Boolean
-  waterConnection Boolean
+  externalBookingId String?  @unique
 
-  camping         Camping  @relation(fields: [campingId], references: [id])
-  features        SpotFeature[]
-  reservations    Reservation[]
+  name              String
+  description       String
+  capacity          Int
+  pricePerNight     Int
+  imageUrl          String
+  size              Int
+  electricity       Boolean
+  waterConnection   Boolean
+
+  camping           Camping  @relation(fields: [campingId], references: [id])
+  features          SpotFeature[]
+  reservations      Reservation[]
 }
 
 model SpotFeature {
@@ -48,6 +50,11 @@ model SpotFeature {
   spot   Spot   @relation(fields: [spotId], references: [id], onDelete: Cascade)
 }
 
+enum ReservationSource {
+  CAMPIFY
+  BLOOKERS
+}
+
 enum ReservationStatus {
   PENDING
   CONFIRMED
@@ -56,19 +63,27 @@ enum ReservationStatus {
 }
 
 model Reservation {
-  id            String              @id @default(cuid())
-  spotId        String
-  spot          Spot                @relation(fields: [spotId], references: [id], onDelete: Cascade)
-  firstName     String
-  lastName      String
-  email         String
-  phone         String
-  guests        Int
-  arrivalDate   DateTime
-  departureDate DateTime
-  notes         String?
-  status        ReservationStatus   @default(PENDING)
-  createdAt     DateTime            @default(now())
+  id                    String              @id @default(cuid())
+  spotId                String
+  spot                  Spot                @relation(fields: [spotId], references: [id], onDelete: Cascade)
+
+  firstName             String
+  lastName              String
+  email                 String
+  phone                 String
+  guests                Int
+  arrivalDate           DateTime
+  departureDate         DateTime
+  notes                 String?
+
+  status                ReservationStatus   @default(PENDING)
+
+  source                ReservationSource   @default(CAMPIFY)
+  externalReservationId String?
+
+  createdAt             DateTime            @default(now())
+
+  @@unique([source, externalReservationId])
 }
 
 model NewsItem {

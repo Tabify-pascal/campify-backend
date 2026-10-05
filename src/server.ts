@@ -11,6 +11,7 @@ import faqRouter from "./routes/faq.js";
 import contactRouter from "./routes/contact.js";
 import reservationsRouter from "./routes/reservations.js";
 import campingRouter from "./routes/campings.js";
+import blookersRouter from "./routes/integrations/blookers.js";
 
 // Admin
 import adminDashboardRouter from "./routes/admin/dashboard.js";
@@ -67,6 +68,12 @@ apiRouter.use("/auth", authRouter);
 
 // Account
 apiRouter.use("/account", accountRouter);
+
+// Blookers
+apiRouter.use(
+    "/integrations/blookers",
+    blookersRouter
+);
 
 // Admin
 apiRouter.use(

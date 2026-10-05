@@ -7,14 +7,13 @@ import { seedManagers } from "./seeds/managers.seed.js";
 import { seedSpots } from "./seeds/spots.seed.js";
 import { seedNews } from "./seeds/news.seed.js";
 import { seedFaq } from "./seeds/faq.seed.js";
+import { seedReservations } from "./seeds/reservations.seed.js";
 
 const prisma = new PrismaClient();
 
 async function main() {
     await prisma.reservation.deleteMany();
     await prisma.contactMessage.deleteMany();
-
-    // Must be deleted before users/campings.
     await prisma.campingManager.deleteMany();
 
     await prisma.spotFeature.deleteMany();
@@ -29,7 +28,17 @@ async function main() {
     const campings = await seedCampings(prisma);
 
     await seedManagers(prisma, campings);
-    await seedSpots(prisma, campings);
+
+    const spots = await seedSpots(
+        prisma,
+        campings
+    );
+
+    await seedReservations(
+        prisma,
+        spots
+    );
+
     await seedNews(prisma);
     await seedFaq(prisma);
 
