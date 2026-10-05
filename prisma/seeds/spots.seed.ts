@@ -5,9 +5,11 @@ export async function seedSpots(
     prisma: PrismaClient,
     campings: SeedCampings
 ) {
-    await prisma.spot.create({
+    const bosSpot = await prisma.spot.create({
         data: {
             campingId: campings.bosCamping.id,
+            externalBookingId: "BOSRAND-BOSZICHT",
+
             name: "Boszicht",
             description:
                 "Ruime kampeerplaats aan de bosrand.",
@@ -28,9 +30,11 @@ export async function seedSpots(
         },
     });
 
-    await prisma.spot.create({
+    const meerSpot = await prisma.spot.create({
         data: {
             campingId: campings.meerCamping.id,
+            externalBookingId: "HETMEER-MEERZICHT",
+
             name: "Meerzicht",
             description:
                 "Geniet van een prachtig uitzicht over het meer.",
@@ -50,4 +54,13 @@ export async function seedSpots(
             },
         },
     });
+
+    return {
+        bosSpot,
+        meerSpot,
+    };
 }
+
+export type SeedSpots = Awaited<
+    ReturnType<typeof seedSpots>
+>;
