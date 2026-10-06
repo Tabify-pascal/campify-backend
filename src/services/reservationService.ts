@@ -3,6 +3,7 @@ import { prisma } from "../prisma.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 import { ValidationError } from "../errors/ValidationError.js";
 import { sendReservationNotifications } from "./reservationNotificationService.js";
+import type { PaymentStatus } from "@prisma/client";
 
 export async function createReservation(data: ReservationBody) {
     const spot = await prisma.spot.findUnique({
@@ -64,4 +65,31 @@ export async function createReservation(data: ReservationBody) {
     }
 
     return reservation;
+}
+
+export async function updateReservationPaymentStatus(
+    reservationId: string,
+    paymentStatus: PaymentStatus
+) {
+    const reservation = await prisma.reservation.findUnique({
+        where: {
+            id: reservationId,
+        },
+        select: {
+            id: true,
+        },
+    });
+
+    if (!reservation) {
+        throw new NotFoundError("Reservation");
+    }
+
+    return prisma.reservation.update({
+        where: {
+            id: reservationId,
+        },
+        data: {
+            paymentStatus,
+        },
+    });
 }

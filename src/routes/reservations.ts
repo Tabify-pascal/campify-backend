@@ -1,8 +1,16 @@
 import { Router } from "express";
-import { createReservationController } from "../controllers/reservationController.js";
+import {
+    createReservation,
+    updatePaymentStatus,
+} from "../controllers/reservationController.js";
 
 const router = Router();
 
-router.post("/", createReservationController);
+router.post("/", createReservation);
+router.patch(
+    "/:reservationId/payment",
+    updatePaymentStatus
+);
+
 
 export default router;
