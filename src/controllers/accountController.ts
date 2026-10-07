@@ -5,39 +5,19 @@ import {
 
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { assertAuthenticated } from "../middleware/assertAuthenticated.js";
-import { prisma } from "../prisma.js";
+import { getAccountReservations } from "../services/accountService.js";
 
-export const getMyReservations = asyncHandler(async (
-    req: Request,
-    res: Response
-) => {
-    assertAuthenticated(req);
+export const getMyReservations =
+    asyncHandler(async (
+        req: Request,
+        res: Response
+    ) => {
+        assertAuthenticated(req);
 
-    const reservations = await prisma.reservation.findMany({
-        where: {
-            email: req.auth.email,
-        },
-        select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            guests: true,
-            arrivalDate: true,
-            departureDate: true,
-            notes: true,
-            status: true,
-            spot: {
-                select: {
-                    id: true,
-                    name: true,
-                    imageUrl: true,
-                },
-            },
-        },
-        orderBy: {
-            arrivalDate: "desc",
-        },
+        const reservations =
+            await getAccountReservations(
+                req.auth.email
+            );
+
+        res.json(reservations);
     });
-
-    res.json(reservations);
-});

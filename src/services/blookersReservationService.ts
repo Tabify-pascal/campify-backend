@@ -1,5 +1,3 @@
-// src/services/blookersReservationService.ts
-
 import { prisma } from "../prisma.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 import { ValidationError } from "../errors/ValidationError.js";
@@ -7,6 +5,7 @@ import { ValidationError } from "../errors/ValidationError.js";
 import type { BlookersReservationBody } from "../schemas/blookersReservationSchema.js";
 
 import { sendReservationNotifications } from "./reservationNotificationService.js";
+import { calculateTotalPrice } from "../utils/calculateTotalPrice.js";
 
 export async function createBlookersReservation(
     data: BlookersReservationBody
@@ -36,6 +35,12 @@ export async function createBlookersReservation(
     if (!spot) {
         throw new NotFoundError("Spot");
     }
+
+    const totalPrice = calculateTotalPrice(
+        data.arrivalDate,
+        data.departureDate,
+        spot.pricePerNight
+    );
 
     if (data.guests > spot.capacity) {
         throw new ValidationError(
@@ -78,14 +83,15 @@ export async function createBlookersReservation(
             arrivalDate: data.arrivalDate,
             departureDate: data.departureDate,
 
+            pricePerNight: spot.pricePerNight,
+            totalPrice,
+
             ...(data.notes
                 ? { notes: data.notes }
                 : {}),
 
             source: "BLOOKERS",
-            externalReservationId:
-                data.reservationId,
-
+            externalReservationId: data.reservationId,
             status: "PENDING",
         },
     });

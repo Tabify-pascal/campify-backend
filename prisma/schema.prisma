@@ -62,6 +62,11 @@ enum ReservationStatus {
   COMPLETED
 }
 
+enum PaymentStatus {
+  UNPAID
+  PAID
+}
+
 model Reservation {
   id                    String              @id @default(cuid())
   spotId                String
@@ -77,9 +82,12 @@ model Reservation {
   notes                 String?
 
   status                ReservationStatus   @default(PENDING)
+  paymentStatus         PaymentStatus       @default(UNPAID)
 
   source                ReservationSource   @default(CAMPIFY)
   externalReservationId String?
+  pricePerNight         Int
+  totalPrice            Int
 
   createdAt             DateTime            @default(now())
 
