@@ -19,6 +19,7 @@ import type { ReservationParams } from "../types/reservations.js";
 
 import {
     createReservation as createReservationService,
+    getReservationCheckoutSummary,
     updateReservationPaymentStatus,
 } from "../services/reservationService.js";
 
@@ -63,6 +64,19 @@ export const updatePaymentStatus =
             await updateReservationPaymentStatus(
                 req.params.reservationId,
                 data.paymentStatus
+            );
+
+        res.json(reservation);
+    });
+
+    export const getCheckoutSummary =
+    asyncHandler<ReservationParams>(async (
+        req: Request<ReservationParams>,
+        res: Response
+    ) => {
+        const reservation =
+            await getReservationCheckoutSummary(
+                req.params.reservationId
             );
 
         res.json(reservation);

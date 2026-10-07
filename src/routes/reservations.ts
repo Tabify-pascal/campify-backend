@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
     createReservation,
+    getCheckoutSummary,
     updatePaymentStatus,
 } from "../controllers/reservationController.js";
 
@@ -11,6 +12,9 @@ router.patch(
     "/:reservationId/payment",
     updatePaymentStatus
 );
-
+router.get(
+    "/:reservationId/checkout",
+    getCheckoutSummary
+);
 
 export default router;

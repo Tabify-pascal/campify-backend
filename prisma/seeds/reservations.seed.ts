@@ -19,6 +19,8 @@ export async function seedReservations(
             departureDate: new Date("2026-11-14"),
 
             notes: "Graag een rustige plek.",
+            pricePerNight: 35,
+            totalPrice: 140,
 
             status: "PENDING",
             source: "CAMPIFY",
@@ -39,6 +41,8 @@ export async function seedReservations(
             departureDate: new Date("2026-12-05"),
 
             notes: "Reservering via Blookers.",
+            pricePerNight: 42,
+            totalPrice: 168,
 
             status: "CONFIRMED",
             source: "BLOOKERS",

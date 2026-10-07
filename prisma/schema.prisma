@@ -86,6 +86,8 @@ model Reservation {
 
   source                ReservationSource   @default(CAMPIFY)
   externalReservationId String?
+  pricePerNight         Int
+  totalPrice            Int
 
   createdAt             DateTime            @default(now())
 
