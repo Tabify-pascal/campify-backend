@@ -132,6 +132,18 @@ model FaqItem {
   answer   String
 }
 
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
 enum UserRole {
   ADMIN
   CUSTOMER
@@ -145,6 +157,8 @@ model User {
   email        String   @unique
   passwordHash String
   role         UserRole @default(CUSTOMER)
+  emailVerifiedAt DateTime?
+  emailVerificationTokens EmailVerificationToken[]
 
   managedCampings CampingManager[]
 

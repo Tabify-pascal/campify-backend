@@ -13,6 +13,20 @@ import {
     register,
 } from "../services/authService.js";
 import { assertAuthenticated } from "../middleware/assertAuthenticated.js";
+import {
+    verifyEmailSchema,
+    type VerifyEmailBody,
+} from "../schemas/verifyEmailSchema.js";
+
+import { verifyEmail } from "../services/emailVerificationService.js";
+import {
+    resendVerificationSchema,
+    type ResendVerificationBody,
+} from "../schemas/resendVerificationSchema.js";
+
+import {
+    resendVerificationEmail,
+} from "../services/emailVerificationService.js";
 
 const cookieName =
     process.env.AUTH_COOKIE_NAME ?? "campify_auth";
@@ -36,15 +50,9 @@ export const registerUser = asyncHandler(async (
 
     const user = await register(data);
 
-    const token = await createAuthToken({
-        sub: user.id,
-        email: user.email,
-        role: user.role,
-    });
-
-    res.cookie(cookieName, token, cookieOptions);
-
     res.status(201).json({
+        message:
+            "Account created. Please verify your email address before logging in.",
         user,
     });
 });
@@ -101,3 +109,41 @@ export const logoutUser = asyncHandler(async (
 
     res.status(204).send();
 });
+
+export const verifyEmailAddress =
+    asyncHandler(async (
+        req: Request<
+            Record<string, never>,
+            unknown,
+            VerifyEmailBody
+        >,
+        res: Response
+    ) => {
+        const data = verifyEmailSchema.parse(req.body);
+
+        await verifyEmail(data.token);
+
+        res.json({
+            message: "Email address verified successfully",
+        });
+    });
+
+export const resendVerification =
+    asyncHandler(async (
+        req: Request<
+            Record<string, never>,
+            unknown,
+            ResendVerificationBody
+        >,
+        res: Response
+    ) => {
+        const data =
+            resendVerificationSchema.parse(req.body);
+
+        await resendVerificationEmail(data.email);
+
+        res.json({
+            message:
+                "If this email address requires verification, a new link has been sent.",
+        });
+    });
