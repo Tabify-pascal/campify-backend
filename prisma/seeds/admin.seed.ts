@@ -31,7 +31,7 @@ export async function seedAdmin(prisma: PrismaClient) {
             lastName: adminLastName,
             passwordHash,
             role: "ADMIN",
-            eemailVerifiedAt: verifiedAt,
+            emailVerifiedAt: verifiedAt,
         },
         create: {
             email: adminEmail,
