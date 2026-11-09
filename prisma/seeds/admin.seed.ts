@@ -7,6 +7,7 @@ export async function seedAdmin(prisma: PrismaClient) {
     const adminFirstName = process.env.ADMIN_FIRST_NAME;
     const adminLastName = process.env.ADMIN_LAST_NAME;
     const adminPassword = process.env.ADMIN_PASSWORD;
+    const verifiedAt = new Date();
 
     if (
         !adminEmail ||
@@ -30,6 +31,7 @@ export async function seedAdmin(prisma: PrismaClient) {
             lastName: adminLastName,
             passwordHash,
             role: "ADMIN",
+            eemailVerifiedAt: verifiedAt,
         },
         create: {
             email: adminEmail,
@@ -37,6 +39,7 @@ export async function seedAdmin(prisma: PrismaClient) {
             lastName: adminLastName,
             passwordHash,
             role: "ADMIN",
+            emailVerifiedAt: verifiedAt,
         },
     });
 }

@@ -29,6 +29,17 @@ const apiRouter = Router();
 
 const PORT = Number(process.env.PORT) || 3000;
 const APP_BASE_PATH = process.env.APP_BASE_PATH ?? "";
+const emailVerificationEnabled =
+    process.env.EMAIL_VERIFICATION_ENABLED !== "false";
+
+if (
+    process.env.NODE_ENV === "production" &&
+    !emailVerificationEnabled
+) {
+    throw new Error(
+        "Email verification cannot be disabled in production"
+    );
+}
 
 app.use(
     cors({

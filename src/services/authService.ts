@@ -3,7 +3,12 @@ import { hashPassword, verifyPassword } from "../utils/password.js";
 import { ValidationError } from "../errors/ValidationError.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 import type { RegisterBody, LoginBody } from "../schemas/authSchema.js";
+import { ForbiddenError } from "../errors/ForbiddenError.js";
+import { sendMail } from "./mailService.js";
+import { createEmailVerificationToken } from "./emailVerificationService.js";
 
+const emailVerificationEnabled =
+    process.env.EMAIL_VERIFICATION_ENABLED !== "false";
 
 export async function login(
     data: LoginBody
@@ -13,6 +18,7 @@ export async function login(
             email: data.email.toLowerCase(),
         },
     });
+
 
     if (!user) {
         throw new ValidationError(
@@ -31,6 +37,12 @@ export async function login(
         );
     }
 
+    if (!user.emailVerifiedAt) {
+        throw new ForbiddenError(
+            "Please verify your email address before logging in."
+        );
+    }
+
     return {
         id: user.id,
         firstName: user.firstName,
@@ -41,7 +53,7 @@ export async function login(
 }
 
 export async function register(data: RegisterBody) {
-    const email = data.email.toLowerCase();
+    const email = data.email.trim().toLowerCase();
 
     const existingUser = await prisma.user.findUnique({
         where: { email },
@@ -57,13 +69,17 @@ export async function register(data: RegisterBody) {
         data.password
     );
 
-    return prisma.user.create({
+    const user = await prisma.user.create({
         data: {
             firstName: data.firstName,
             lastName: data.lastName,
             email,
             passwordHash,
             role: "CUSTOMER",
+
+            emailVerifiedAt: emailVerificationEnabled
+                ? null
+                : new Date(),
         },
         select: {
             id: true,
@@ -73,6 +89,45 @@ export async function register(data: RegisterBody) {
             role: true,
         },
     });
+
+    if (emailVerificationEnabled) {
+        const token = await createEmailVerificationToken(
+            user.id
+        );
+
+        const frontendUrl = process.env.FRONTEND_URL;
+
+        if (!frontendUrl) {
+            throw new Error("FRONTEND_URL is not configured");
+        }
+
+        const verificationUrl = new URL(
+            "/verify-email",
+            frontendUrl
+        );
+
+        verificationUrl.searchParams.set("token", token);
+
+        await sendMail({
+            to: user.email,
+            subject: "Verify your Campify account",
+            text: [
+                `Hello ${user.firstName},`,
+                "",
+                "Thank you for registering with Campify.",
+                "Please verify your email address:",
+                "",
+                verificationUrl.toString(),
+                "",
+                "This link is valid for 24 hours.",
+                "",
+                "Kind regards,",
+                "Campify",
+            ].join("\n"),
+        });
+    }
+
+    return user;
 }
 
 export async function getAuthenticatedUser(userId: string) {

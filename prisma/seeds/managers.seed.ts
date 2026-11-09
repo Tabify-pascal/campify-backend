@@ -19,6 +19,8 @@ export async function seedManagers(
         );
     }
 
+    const verifiedAt = new Date();
+
     const bosManagerPasswordHash =
         await hashPassword(bosManagerPassword);
 
@@ -34,6 +36,7 @@ export async function seedManagers(
             lastName: "Bosrand",
             passwordHash: bosManagerPasswordHash,
             role: "MANAGER",
+            emailVerifiedAt: verifiedAt,
         },
         create: {
             firstName: "Manager",
@@ -41,6 +44,7 @@ export async function seedManagers(
             email: "pascalthomasse@hotmail.com",
             passwordHash: bosManagerPasswordHash,
             role: "MANAGER",
+            emailVerifiedAt: verifiedAt,
         },
     });
 
@@ -53,6 +57,7 @@ export async function seedManagers(
             lastName: "Het Meer",
             passwordHash: meerManagerPasswordHash,
             role: "MANAGER",
+            emailVerifiedAt: new Date(),
         },
         create: {
             firstName: "Manager",
@@ -60,6 +65,7 @@ export async function seedManagers(
             email: "pascalthomasse@outlook.com",
             passwordHash: meerManagerPasswordHash,
             role: "MANAGER",
+            emailVerifiedAt: new Date(),
         },
     });
 
