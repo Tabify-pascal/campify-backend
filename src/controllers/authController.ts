@@ -23,19 +23,18 @@ import {
     verifyEmailSchema,
     type VerifyEmailBody,
 } from "../schemas/verifyEmailSchema.js";
+import {
+    verifyEmail,
+    resendVerificationEmail,
+} from "../services/emailVerificationService.js";
 
-import { verifyEmail } from "../services/emailVerificationService.js";
 import {
     resendVerificationSchema,
     type ResendVerificationBody,
 } from "../schemas/resendVerificationSchema.js";
 
-import {
-    resendVerificationEmail,
-} from "../services/emailVerificationService.js";
 
-const cookieName =
-    process.env.AUTH_COOKIE_NAME ?? "campify_auth";
+const cookieName = process.env.AUTH_COOKIE_NAME ?? "campify_auth";
 
 const cookieOptions = {
     httpOnly: true,
@@ -44,69 +43,91 @@ const cookieOptions = {
     maxAge: 8 * 60 * 60 * 1000,
 };
 
-export const registerUser = asyncHandler(async (
-    req: Request<
-        Record<string, never>,
-        unknown,
-        RegisterBody
-    >,
-    res: Response
-) => {
-    const data = registerSchema.parse(req.body);
 
-    const user = await register(data);
+/**
+ * Validates the request and registers a new user account.
+ *
+ * @param req - Request containing the registration details.
+ * @param res - Response object.
+ * @returns HTTP 201 with the created user and a confirmation message.
+ */
+export const registerUser = asyncHandler(
+    async (
+        req: Request<Record<string, never>, unknown, RegisterBody>,
+        res: Response,
+    ) => {
+        const data = registerSchema.parse(req.body);
 
-    res.status(201).json({
-        message:
-            "Account created. Please verify your email address before logging in.",
-        user,
-    });
-});
+        const user = await register(data);
 
-export const loginUser = asyncHandler(async (
-    req: Request<
-        Record<string, never>,
-        unknown,
-        LoginBody
-    >,
-    res: Response
-) => {
-    const data = loginSchema.parse(req.body);
+        res.status(201).json({
+            message:
+                "Account created. Please verify your email address before logging in.",
+            user,
+        });
+    },
+);
 
-    const user = await login(data);
 
-    const token = await createAuthToken({
-        sub: user.id,
-        email: user.email,
-        role: user.role,
-    });
+/**
+ * Authenticates a user and sets an authentication cookie.
+ *
+ * @param req - Request containing the login credentials.
+ * @param res - Response object.
+ * @returns JSON containing the authenticated user.
+ */
+export const loginUser = asyncHandler(
+    async (
+        req: Request<Record<string, never>, unknown, LoginBody>,
+        res: Response,
+    ) => {
+        const data = loginSchema.parse(req.body);
 
-    res.cookie(cookieName, token, cookieOptions);
+        const user = await login(data);
 
-    res.json({
-        user,
-    });
-});
+        const token = await createAuthToken({
+            sub: user.id,
+            email: user.email,
+            role: user.role,
+        });
 
-export const getCurrentUser = asyncHandler(async (
-    req: Request,
-    res: Response
-) => {
-    assertAuthenticated(req);
+        res.cookie(cookieName, token, cookieOptions);
 
-    const user = await getAuthenticatedUser(
-        req.auth.userId
-    );
+        res.json({
+            user,
+        });
+    },
+);
 
-    res.json({
-        user,
-    });
-});
 
-export const logoutUser = asyncHandler(async (
-    _req: Request,
-    res: Response
-) => {
+/**
+ * Retrieves the currently authenticated user's account details.
+ *
+ * @param req - Request containing the authenticated user.
+ * @param res - Response object.
+ * @returns JSON containing the current user.
+ */
+export const getCurrentUser = asyncHandler(
+    async (req: Request, res: Response) => {
+        assertAuthenticated(req);
+
+        const user = await getAuthenticatedUser(req.auth.userId);
+
+        res.json({
+            user,
+        });
+    },
+);
+
+
+/**
+ * Logs out the user by clearing the authentication cookie.
+ *
+ * @param _req - Unused request object.
+ * @param res - Response object.
+ * @returns HTTP 204 with no content.
+ */
+export const logoutUser = asyncHandler(async (_req: Request, res: Response) => {
     res.clearCookie(cookieName, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -116,14 +137,18 @@ export const logoutUser = asyncHandler(async (
     res.status(204).send();
 });
 
-export const verifyEmailAddress =
-    asyncHandler(async (
-        req: Request<
-            Record<string, never>,
-            unknown,
-            VerifyEmailBody
-        >,
-        res: Response
+
+/**
+ * Validates a verification token and verifies the user's email address.
+ *
+ * @param req - Request containing the email verification token.
+ * @param res - Response object.
+ * @returns JSON containing a verification confirmation message.
+ */
+export const verifyEmailAddress = asyncHandler(
+    async (
+        req: Request<Record<string, never>, unknown, VerifyEmailBody>,
+        res: Response,
     ) => {
         const data = verifyEmailSchema.parse(req.body);
 
@@ -132,19 +157,23 @@ export const verifyEmailAddress =
         res.json({
             message: "Email address verified successfully",
         });
-    });
+    },
+);
 
-export const resendVerification =
-    asyncHandler(async (
-        req: Request<
-            Record<string, never>,
-            unknown,
-            ResendVerificationBody
-        >,
-        res: Response
+
+/**
+ * Requests a new email verification link for a user.
+ *
+ * @param req - Request containing the user's email address.
+ * @param res - Response object.
+ * @returns JSON containing a confirmation message.
+ */
+export const resendVerification = asyncHandler(
+    async (
+        req: Request<Record<string, never>, unknown, ResendVerificationBody>,
+        res: Response,
     ) => {
-        const data =
-            resendVerificationSchema.parse(req.body);
+        const data = resendVerificationSchema.parse(req.body);
 
         await resendVerificationEmail(data.email);
 
@@ -152,4 +181,5 @@ export const resendVerification =
             message:
                 "If this email address requires verification, a new link has been sent.",
         });
-    });
+    },
+);
