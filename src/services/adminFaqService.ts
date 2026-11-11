@@ -8,41 +8,65 @@ import { prisma } from "../prisma.js";
 import type { AdminFaqBody } from "../schemas/adminFaqSchema.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 
-export async function getAdminFaqs(){
+/**
+ * Retrieves all FAQ items sorted alphabetically by question.
+ *
+ * @returns A list of FAQ items.
+ */
+export async function getAdminFaqs() {
     return prisma.faqItem.findMany({
         orderBy: {
-            question: "asc"
+            question: "asc",
         },
     });
 }
 
-export async function getAdminFaqById(faqId: string){
+/**
+ * Retrieves a specific FAQ item by its ID.
+ *
+ * @param faqId - ID of the requested FAQ item.
+ * @returns The requested FAQ item.
+ */
+export async function getAdminFaqById(faqId: string) {
     const faqItem = await prisma.faqItem.findUnique({
-        where: { id: faqId},
+        where: { id: faqId },
     });
 
-    if (!faqItem){
+    if (!faqItem) {
         throw new NotFoundError("Faq item");
     }
 
     return faqItem;
 }
 
-export async function createAdminFaq(data: AdminFaqBody){
+/**
+ * Creates a new FAQ item using the provided details.
+ *
+ * @param data - Validated FAQ details.
+ * @returns The newly created FAQ item.
+ */
+export async function createAdminFaq(data: AdminFaqBody) {
     return prisma.faqItem.create({
         data: {
             question: data.question,
             answer: data.answer,
-        }
+        },
     });
 }
 
-export async function updateAdminFaq(faqId: string, data: AdminFaqBody){
+/**
+ * Updates an existing FAQ item.
+ *
+ * @param faqId - ID of the FAQ item to update.
+ * @param data - Validated FAQ details.
+ * @returns The updated FAQ item.
+ */
+export async function updateAdminFaq(faqId: string, data: AdminFaqBody) {
     const existingFaqItem = await prisma.faqItem.findUnique({
         where: { id: faqId },
     });
 
-    if (!existingFaqItem){
+    if (!existingFaqItem) {
         throw new NotFoundError("Faq item");
     }
 
@@ -51,16 +75,22 @@ export async function updateAdminFaq(faqId: string, data: AdminFaqBody){
         data: {
             question: data.question,
             answer: data.answer,
-        }
+        },
     });
 }
 
-export async function deleteAdminFaq(faqId: string){
+/**
+ * Deletes a FAQ item by its ID.
+ *
+ * @param faqId - ID of the FAQ item to delete.
+ * @returns A promise that resolves when the FAQ item is deleted.
+ */
+export async function deleteAdminFaq(faqId: string) {
     const faqItem = await prisma.faqItem.findUnique({
-        where: { id: faqId},
+        where: { id: faqId },
     });
 
-    if (!faqItem){
+    if (!faqItem) {
         throw new NotFoundError("Faq item");
     }
 
@@ -68,4 +98,3 @@ export async function deleteAdminFaq(faqId: string){
         where: { id: faqId },
     });
 }
-

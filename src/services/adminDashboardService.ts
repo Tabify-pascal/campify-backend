@@ -7,6 +7,14 @@
 import { prisma } from "../prisma.js";
 import type { UserRole } from "../types/user.js";
 
+
+/**
+ * Retrieves dashboard statistics based on the user's role and permissions.
+ *
+ * @param userId - ID of the authenticated user.
+ * @param role - Role of the authenticated user.
+ * @returns Counts of pending reservations, new messages, news items and camping spots.
+ */
 export async function getAdminDashboardSummary(
     userId: string,
     role: UserRole
