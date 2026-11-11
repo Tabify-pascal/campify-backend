@@ -1,3 +1,9 @@
+/**
+ * @file canManageCamping.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-09-09
+ */
+
 import { prisma } from "../prisma.js";
 import type { UserRole } from "../types/user.js";
 

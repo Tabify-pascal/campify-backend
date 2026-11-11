@@ -1,3 +1,9 @@
+/**
+ * @file reservationService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-09
+ */
+
 import { type ReservationBody } from "../schemas/reservationSchema.js";
 import { prisma } from "../prisma.js";
 import { NotFoundError } from "../errors/NotFoundError.js";

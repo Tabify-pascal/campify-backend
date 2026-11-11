@@ -1,3 +1,9 @@
+/**
+ * @file adminSpotController.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-13
+ */
+
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {
     updateAdminSpotSchema,

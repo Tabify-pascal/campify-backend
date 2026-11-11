@@ -1,3 +1,9 @@
+/**
+ * @file errorHandler.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-09
+ */
+
 import { type Request, type Response, type NextFunction } from "express";
 import { ZodError } from "zod";
 

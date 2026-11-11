@@ -1,3 +1,9 @@
+/**
+ * @file spotsService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-09
+ */
+
 import { prisma } from "../prisma.js";
 import { type SpotAvailability } from "../types/availability.js";
 import { type SpotSearchQuery } from "../schemas/spotSearchSchema.js";

@@ -1,3 +1,9 @@
+/**
+ * @file accountService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-08-24
+ */
+
 import { prisma } from "../prisma.js";
 
 export async function getAccountReservations(

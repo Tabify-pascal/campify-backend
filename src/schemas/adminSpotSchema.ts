@@ -1,3 +1,9 @@
+/**
+ * @file adminSpotSchema.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-13
+ */
+
 import { z } from "zod";
 
 const formBoolean = z

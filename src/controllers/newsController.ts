@@ -1,3 +1,9 @@
+/**
+ * @file newsController.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-09
+ */
+
 import { type Request, type Response } from "express";
 import { getAllNewsItems, getNewsItemById } from "../services/newsService.js";
 import { type NewsParams } from "../types/news.js";

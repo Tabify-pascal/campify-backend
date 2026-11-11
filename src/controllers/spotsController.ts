@@ -1,3 +1,9 @@
+/**
+ * @file spotsController.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-09
+ */
+
 import { getAllSpots, getSpotById, getSpotAvailability } from "../services/spotsService.js";
 import { type SpotParams } from "../types/spot.js";
 import { asyncHandler } from "../utils/asyncHandler.js";

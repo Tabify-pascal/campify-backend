@@ -1,3 +1,9 @@
+/**
+ * @file campings.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-09-09
+ */
+
 import { Router } from "express";
 
 import { requireAuth } from "../../middleware/requireAuth.js";

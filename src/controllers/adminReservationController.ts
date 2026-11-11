@@ -1,3 +1,9 @@
+/**
+ * @file adminReservationController.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-22
+ */
+
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {
     getAdminReservations,

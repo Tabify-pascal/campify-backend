@@ -1,3 +1,9 @@
+/**
+ * @file adminNewsSchema.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-15
+ */
+
 import { z } from "zod";
 
 const adminNewsBaseSchema = z.object({

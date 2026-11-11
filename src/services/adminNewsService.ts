@@ -1,3 +1,9 @@
+/**
+ * @file adminNewsService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-15
+ */
+
 import { prisma } from "../prisma.js";
 import { type CreateAdminNewsBody, type UpdateAdminNewsBody } from "../schemas/adminNewsSchema.js";
 import { NotFoundError } from "../errors/NotFoundError.js";

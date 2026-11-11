@@ -1,3 +1,9 @@
+/**
+ * @file requireRole.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-08-28
+ */
+
 import {
     type Request,
     type Response,

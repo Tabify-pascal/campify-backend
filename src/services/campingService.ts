@@ -1,3 +1,9 @@
+/**
+ * @file campingService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-09-09
+ */
+
 import { prisma } from "../prisma.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 

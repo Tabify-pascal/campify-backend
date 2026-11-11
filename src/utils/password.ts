@@ -1,3 +1,9 @@
+/**
+ * @file password.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-16
+ */
+
 import {
     randomBytes,
     scrypt as scryptCallback,

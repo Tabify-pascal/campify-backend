@@ -1,3 +1,9 @@
+/**
+ * @file adminDashboardService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-08-06
+ */
+
 import { prisma } from "../prisma.js";
 import type { UserRole } from "../types/user.js";
 

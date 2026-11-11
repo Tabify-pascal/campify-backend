@@ -1,3 +1,9 @@
+/**
+ * @file loginSchema.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-16
+ */
+
 import { z } from "zod";
 
 export const loginSchema = z.object({

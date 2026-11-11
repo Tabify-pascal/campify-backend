@@ -1,3 +1,9 @@
+/**
+ * @file calculateTotalPrice.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-10-07
+ */
+
 export function calculateTotalPrice(
     arrivalDate: Date,
     departureDate: Date,

@@ -1,3 +1,9 @@
+/**
+ * @file adminCampingController.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-09-09
+ */
+
 import { type Request, type Response } from "express";
 
 import { asyncHandler } from "../utils/asyncHandler.js";

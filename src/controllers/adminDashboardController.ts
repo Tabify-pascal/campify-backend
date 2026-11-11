@@ -1,3 +1,9 @@
+/**
+ * @file adminDashboardController.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-08-06
+ */
+
 import { type Request, type Response } from "express";
 
 import { asyncHandler } from "../utils/asyncHandler.js";

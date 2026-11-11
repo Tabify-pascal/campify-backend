@@ -1,3 +1,9 @@
+/**
+ * @file server.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-09
+ */
+
 import express, { Router } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";

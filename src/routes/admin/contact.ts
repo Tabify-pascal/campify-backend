@@ -1,3 +1,9 @@
+/**
+ * @file contact.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-08-06
+ */
+
 import { Router } from "express";
 import { requireAuth } from "../../middleware/requireAuth.js";
 import { requireRole } from "../../middleware/requireRole.js";

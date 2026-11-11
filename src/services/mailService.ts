@@ -1,3 +1,9 @@
+/**
+ * @file mailService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-09-15
+ */
+
 import nodemailer from "nodemailer";
 import { appendFile } from "node:fs/promises";
 import path from "node:path";

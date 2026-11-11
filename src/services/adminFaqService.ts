@@ -1,3 +1,9 @@
+/**
+ * @file adminFaqService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-28
+ */
+
 import { prisma } from "../prisma.js";
 import type { AdminFaqBody } from "../schemas/adminFaqSchema.js";
 import { NotFoundError } from "../errors/NotFoundError.js";

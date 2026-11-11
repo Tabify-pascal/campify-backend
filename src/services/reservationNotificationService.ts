@@ -1,3 +1,9 @@
+/**
+ * @file reservationNotificationService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-09-15
+ */
+
 import { prisma } from "../prisma.js";
 import { sendMail } from "./mailService.js";
 import type { ReservationStatus } from "@prisma/client";
