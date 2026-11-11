@@ -1,3 +1,9 @@
+/**
+ * @file blookers.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-10-05
+ */
+
 // src/routes/integrations/blookers.ts
 
 import { Router } from "express";

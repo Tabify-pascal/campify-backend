@@ -1,3 +1,9 @@
+/**
+ * @file blookersReservationSchema.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-10-05
+ */
+
 // src/schemas/blookersReservationSchema.ts
 
 import { z } from "zod";

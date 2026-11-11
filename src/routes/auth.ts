@@ -1,3 +1,9 @@
+/**
+ * @file auth.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-16
+ */
+
 import { Router } from "express";
 
 import {

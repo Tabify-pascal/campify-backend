@@ -1,3 +1,9 @@
+/**
+ * @file authToken.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-20
+ */
+
 import "dotenv/config";
 import { SignJWT, jwtVerify } from "jose";
 import type { AuthUser } from "../types/user.js";

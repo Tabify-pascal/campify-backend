@@ -1,3 +1,9 @@
+/**
+ * @file authSchema.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-08-28
+ */
+
 import { z } from "zod";
 
 export const registerSchema = z.object({

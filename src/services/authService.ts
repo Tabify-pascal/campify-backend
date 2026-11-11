@@ -1,3 +1,9 @@
+/**
+ * @file authService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-16
+ */
+
 import { prisma } from "../prisma.js";
 import { hashPassword, verifyPassword } from "../utils/password.js";
 import { ValidationError } from "../errors/ValidationError.js";
@@ -37,7 +43,7 @@ export async function login(
         );
     }
 
-    if (!user.emailVerifiedAt) {
+    if (emailVerificationEnabled && !user.emailVerifiedAt) {
         throw new ForbiddenError(
             "Please verify your email address before logging in."
         );

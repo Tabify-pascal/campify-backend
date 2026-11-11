@@ -1,3 +1,9 @@
+/**
+ * @file assertAuthenticated.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-22
+ */
+
 import { type Request } from "express";
 import { type AuthUser } from "../types/user.js";
 

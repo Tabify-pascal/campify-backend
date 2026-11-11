@@ -1,3 +1,9 @@
+/**
+ * @file uploadSpotImage.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-13
+ */
+
 import multer from "multer";
 import path from "node:path";
 import crypto from "node:crypto";

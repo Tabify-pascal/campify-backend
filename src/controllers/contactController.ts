@@ -1,3 +1,9 @@
+/**
+ * @file contactController.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-09
+ */
+
 import { type Request, type Response } from "express";
 import { contactSchema, type ContactBody } from "../schemas/contactSchema.js";
 import { createContactMessage } from "../services/contactService.js";

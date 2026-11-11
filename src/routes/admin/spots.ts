@@ -1,3 +1,9 @@
+/**
+ * @file spots.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-13
+ */
+
 import { Router } from "express";
 
 import { requireAuth } from "../../middleware/requireAuth.js";

@@ -1,3 +1,9 @@
+/**
+ * @file adminFaqController.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-28
+ */
+
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { adminFaqSchema } from "../schemas/adminFaqSchema.js";
 import { createAdminFaq, updateAdminFaq, deleteAdminFaq, getAdminFaqById, getAdminFaqs } from "../services/adminFaqService.js";

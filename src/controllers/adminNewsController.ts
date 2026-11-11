@@ -1,3 +1,9 @@
+/**
+ * @file adminNewsController.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-15
+ */
+
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { createAdminNewsSchema, updateAdminNewsSchema } from "../schemas/adminNewsSchema.js";
 import { createAdminNews, deleteAdminNews, updateAdminNews } from "../services/adminNewsService.js";

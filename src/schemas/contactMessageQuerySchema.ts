@@ -1,3 +1,9 @@
+/**
+ * @file contactMessageQuerySchema.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-08-06
+ */
+
 import { z } from "zod";
 
 export const contactMessageQuerySchema = z.object({

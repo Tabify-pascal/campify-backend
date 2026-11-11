@@ -1,3 +1,9 @@
+/**
+ * @file blookersReservationService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-10-05
+ */
+
 import { prisma } from "../prisma.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 import { ValidationError } from "../errors/ValidationError.js";

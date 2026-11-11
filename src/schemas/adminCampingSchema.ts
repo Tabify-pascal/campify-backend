@@ -1,3 +1,9 @@
+/**
+ * @file adminCampingSchema.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-09-09
+ */
+
 import { z } from "zod";
 
 export const adminCampingSchema = z.object({

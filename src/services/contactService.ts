@@ -1,3 +1,9 @@
+/**
+ * @file contactService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-09
+ */
+
 import { prisma } from "../prisma.js";
 import type { ContactBody } from "../schemas/contactSchema.js";
 import { NotFoundError } from "../errors/NotFoundError.js";

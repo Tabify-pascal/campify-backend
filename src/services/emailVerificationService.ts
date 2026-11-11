@@ -1,3 +1,9 @@
+/**
+ * @file emailVerificationService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-11-09
+ */
+
 import { createHash, randomBytes } from "node:crypto";
 import { prisma } from "../prisma.js";
 import { ValidationError } from "../errors/ValidationError.js";

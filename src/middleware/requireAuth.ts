@@ -1,3 +1,9 @@
+/**
+ * @file requireAuth.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-13
+ */
+
 import {
     type Request,
     type Response,

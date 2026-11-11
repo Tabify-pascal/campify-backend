@@ -1,3 +1,9 @@
+/**
+ * @file user.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-08-28
+ */
+
 export type UserRole =
     | "ADMIN"
     | "CUSTOMER"

@@ -1,3 +1,9 @@
+/**
+ * @file adminReservationService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-09-14
+ */
+
 import { prisma } from "../prisma.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 import { assertCanManageCamping } from "../utils/assertCanManageCamping.js";

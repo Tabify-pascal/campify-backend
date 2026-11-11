@@ -1,3 +1,9 @@
+/**
+ * @file adminContactController.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-08-06
+ */
+
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {
     getAdminContactMessages,

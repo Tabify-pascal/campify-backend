@@ -1,3 +1,9 @@
+/**
+ * @file blookersReservationController.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-10-05
+ */
+
 import { type Request, type Response } from "express";
 
 import { asyncHandler } from "../utils/asyncHandler.js";

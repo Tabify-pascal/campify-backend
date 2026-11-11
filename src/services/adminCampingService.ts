@@ -1,3 +1,9 @@
+/**
+ * @file adminCampingService.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-09-09
+ */
+
 import { prisma } from "../prisma.js";
 import type { UserRole } from "../types/user.js";
 import type { AdminCampingBody } from "../schemas/adminCampingSchema.js";

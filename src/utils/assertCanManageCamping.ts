@@ -1,3 +1,9 @@
+/**
+ * @file assertCanManageCamping.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-09-09
+ */
+
 import { ForbiddenError } from "../errors/ForbiddenError.js";
 import { canManageCamping } from "./canManageCamping.js";
 import type { UserRole } from "../types/user.js";

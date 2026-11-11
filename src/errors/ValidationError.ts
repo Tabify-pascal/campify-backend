@@ -1,3 +1,9 @@
+/**
+ * @file ValidationError.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-07-09
+ */
+
 export class ValidationError extends Error {
     statusCode = 400;
 

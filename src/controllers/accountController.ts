@@ -1,3 +1,9 @@
+/**
+ * @file accountController.ts
+ * @author Pascal Thomasse Mol
+ * @since 2026-08-24
+ */
+
 import {
     type Request,
     type Response,
