@@ -11,16 +11,23 @@ import { assertAuthenticated } from "../middleware/assertAuthenticated.js";
 
 import { getAdminDashboardSummary } from "../services/adminDashboardService.js";
 
-export const getDashboardSummary = asyncHandler(async (
-    req: Request,
-    res: Response
-) => {
-    assertAuthenticated(req);
 
-    const summary = await getAdminDashboardSummary(
-        req.auth.userId,
-        req.auth.role
-    );
+/**
+ * Retrieves dashboard statistics for the authenticated admin or manager.
+ *
+ * @param req - Request containing the authenticated user.
+ * @param res - Response object.
+ * @returns JSON containing the dashboard summary.
+ */
+export const getDashboardSummary = asyncHandler(
+    async (req: Request, res: Response) => {
+        assertAuthenticated(req);
 
-    res.json(summary);
-});
+        const summary = await getAdminDashboardSummary(
+            req.auth.userId,
+            req.auth.role,
+        );
+
+        res.json(summary);
+    },
+);
