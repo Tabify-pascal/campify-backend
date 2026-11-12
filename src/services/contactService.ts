@@ -8,6 +8,12 @@ import { prisma } from "../prisma.js";
 import type { ContactBody } from "../schemas/contactSchema.js";
 import { NotFoundError } from "../errors/NotFoundError.js";
 
+/**
+ * Creates a contact message for an existing camping.
+ *
+ * @param data - Validated contact form details.
+ * @returns The created contact message with its associated camping details.
+ */
 export async function createContactMessage(data: ContactBody) {
     const camping = await prisma.camping.findUnique({
         where: {

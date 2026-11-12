@@ -6,7 +6,6 @@
 
 import { prisma } from "../prisma.js";
 
-
 /**
  * Retrieves all reservations associated with an email address,
  * ordered by arrival date from newest to oldest.
@@ -14,9 +13,7 @@ import { prisma } from "../prisma.js";
  * @param email - Email address used to find the reservations.
  * @returns A list of reservations with their details and camping spot information.
  */
-export async function getAccountReservations(
-    email: string
-) {
+export async function getAccountReservations(email: string) {
     return prisma.reservation.findMany({
         where: {
             email,

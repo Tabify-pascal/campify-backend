@@ -25,12 +25,12 @@ export async function getAdminCampings(userId: string, role: UserRole) {
             role === "ADMIN"
                 ? {}
                 : {
-                    managers: {
-                        some: {
-                            userId,
-                        },
-                    },
-                },
+                      managers: {
+                          some: {
+                              userId,
+                          },
+                      },
+                  },
 
         orderBy: {
             name: "asc",
@@ -143,7 +143,7 @@ export async function deleteAdminCamping(campingId: string) {
 
     if (camping.spots.length > 0) {
         throw new ValidationError(
-            "Camping cannot be deleted while it still has spots"
+            "Camping cannot be deleted while it still has spots",
         );
     }
 
