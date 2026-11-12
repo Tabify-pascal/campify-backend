@@ -9,7 +9,10 @@
     "start": "node dist/server.js",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "tsx prisma/seed.ts"
+    "prisma:seed": "tsx prisma/seed.ts",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
+    "test:watch": "npm test -- --watch",
+    "test:coverage": "npm test -- --coverage"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -33,12 +36,15 @@
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
     "@types/multer": "^2.2.0",
     "@types/node": "^26.0.1",
     "@types/nodemailer": "^8.0.1",
     "dotenv": "^17.4.2",
+    "jest": "^30.5.2",
     "prettier": "^3.10.0",
     "prisma": "^6.19.3",
+    "ts-jest": "^29.4.15",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   }
