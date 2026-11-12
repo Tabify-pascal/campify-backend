@@ -16,7 +16,7 @@ router.get(
     "/reservations",
     requireAuth,
     requireRole("CUSTOMER"),
-    getMyReservations
+    getMyReservations,
 );
 
 export default router;

@@ -22,9 +22,6 @@ router.use(requireRole("ADMIN", "MANAGER"));
 router.get("/", getReservations);
 router.get("/:reservationId", getReservationById);
 router.delete("/:reservationId", deleteReservation);
-router.patch(
-    "/:reservationId/status",
-    updateReservationStatus
-);
+router.patch("/:reservationId/status", updateReservationStatus);
 
 export default router;

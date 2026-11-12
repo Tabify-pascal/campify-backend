@@ -13,10 +13,6 @@ import { createReservation } from "../../controllers/blookersReservationControll
 
 const router = Router();
 
-router.post(
-    "/reservations",
-    requireBlookersAuth,
-    createReservation
-);
+router.post("/reservations", requireBlookersAuth, createReservation);
 
 export default router;

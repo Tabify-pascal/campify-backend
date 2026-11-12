@@ -20,34 +20,14 @@ import {
 const router = Router();
 
 router.use(requireAuth);
-router.get(
-    "/",
-    requireRole("ADMIN", "MANAGER"),
-    getCampings
-);
+router.get("/", requireRole("ADMIN", "MANAGER"), getCampings);
 
-router.get(
-    "/:campingId",
-    requireRole("ADMIN", "MANAGER"),
-    getCampingById
-);
+router.get("/:campingId", requireRole("ADMIN", "MANAGER"), getCampingById);
 
-router.post(
-    "/",
-    requireRole("ADMIN"),
-    createCamping
-);
+router.post("/", requireRole("ADMIN"), createCamping);
 
-router.put(
-    "/:campingId",
-    requireRole("ADMIN", "MANAGER"),
-    updateCamping
-);
+router.put("/:campingId", requireRole("ADMIN", "MANAGER"), updateCamping);
 
-router.delete(
-    "/:campingId",
-    requireRole("ADMIN"),
-    deleteCamping
-);
+router.delete("/:campingId", requireRole("ADMIN"), deleteCamping);
 
 export default router;

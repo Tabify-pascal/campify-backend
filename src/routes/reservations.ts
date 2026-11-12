@@ -14,13 +14,7 @@ import {
 const router = Router();
 
 router.post("/", createReservation);
-router.patch(
-    "/:reservationId/payment",
-    updatePaymentStatus
-);
-router.get(
-    "/:reservationId/checkout",
-    getCheckoutSummary
-);
+router.patch("/:reservationId/payment", updatePaymentStatus);
+router.get("/:reservationId/checkout", getCheckoutSummary);
 
 export default router;
