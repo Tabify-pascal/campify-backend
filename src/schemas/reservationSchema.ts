@@ -19,7 +19,7 @@ export const reservationSchema = z
         notes: z.string().optional(),
     })
     .refine((data) => data.departureDate > data.arrivalDate, {
-        message: "Departure date must be afer arrival date",
+        message: "Departure date must be after arrival date",
         path: ["departureDate"],
     });
 

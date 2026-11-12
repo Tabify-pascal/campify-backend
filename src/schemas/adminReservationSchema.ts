@@ -18,4 +18,3 @@ export const adminReservationSchema = z.object({
 });
 
 export type AdminReservationBody = z.input<typeof adminReservationSchema>;
-

@@ -65,7 +65,11 @@ app.use(
     express.static("uploads")
 );
 
-// Health
+/**
+ * Returns the API health status.
+ *
+ * @returns A JSON response indicating that the API is running.
+ */
 apiRouter.get("/health", (_req, res) => {
     res.json({
         status: "ok",

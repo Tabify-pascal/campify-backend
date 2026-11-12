@@ -4,10 +4,7 @@
  * @since 2026-08-28
  */
 
-export type UserRole =
-    | "ADMIN"
-    | "CUSTOMER"
-    | "MANAGER";
+export type UserRole = "ADMIN" | "CUSTOMER" | "MANAGER";
 
 export type User = {
     id: string;
