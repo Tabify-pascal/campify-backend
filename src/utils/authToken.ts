@@ -22,8 +22,14 @@ export type AuthTokenPayload = {
     role: AuthUser["role"];
 };
 
+/**
+ * Creates a signed JWT containing the user's authentication details.
+ *
+ * @param payload - User details to include in the authentication token.
+ * @returns A signed JWT that expires after eight hours.
+ */
 export async function createAuthToken(
-    payload: AuthTokenPayload
+    payload: AuthTokenPayload,
 ): Promise<string> {
     return new SignJWT({
         email: payload.email,
@@ -36,19 +42,24 @@ export async function createAuthToken(
         .sign(secretKey);
 }
 
+/**
+ * Verifies a JWT and validates its authentication payload.
+ *
+ * @param token - JWT to verify.
+ * @returns The validated authentication payload containing the user ID, email and role.
+ * @throws {Error} If the token is invalid, expired or contains an invalid payload.
+ */
 export async function verifyAuthToken(
-    token: string
+    token: string,
 ): Promise<AuthTokenPayload> {
     const { payload } = await jwtVerify(token, secretKey);
 
     if (
         typeof payload.sub !== "string" ||
         typeof payload.email !== "string" ||
-        (
-            payload.role !== "ADMIN" &&
+        (payload.role !== "ADMIN" &&
             payload.role !== "CUSTOMER" &&
-            payload.role !== "MANAGER"
-        )
+            payload.role !== "MANAGER")
     ) {
         throw new Error("Invalid auth token payload");
     }
