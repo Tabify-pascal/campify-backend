@@ -26,17 +26,9 @@ router.use(requireRole("ADMIN", "MANAGER"));
 router.get("/", getSpots);
 router.get("/:spotId", getSpotById);
 
-router.post(
-    "/",
-    uploadSpotImage.single("image"),
-    createSpot
-);
+router.post("/", uploadSpotImage.single("image"), createSpot);
 
-router.put(
-    "/:spotId",
-    uploadSpotImage.single("image"),
-    updateSpot
-);
+router.put("/:spotId", uploadSpotImage.single("image"), updateSpot);
 
 router.delete("/:spotId", deleteSpot);
 

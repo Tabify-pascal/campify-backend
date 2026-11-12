@@ -6,7 +6,12 @@
 
 import { prisma } from "../prisma.js";
 
-export async function getAllFaqItems(){
+/**
+ * Retrieves all FAQ items sorted alphabetically by question.
+ *
+ * @returns A list of FAQ items.
+ */
+export async function getAllFaqItems() {
     return prisma.faqItem.findMany({
         orderBy: {
             question: "asc",

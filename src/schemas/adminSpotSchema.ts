@@ -19,10 +19,20 @@ const adminSpotBaseSchema = z.object({
     campingId: z.string().min(1),
     electricity: formBoolean,
     waterConnection: formBoolean,
-    features: z
-        .string()
-        .transform((value) => JSON.parse(value) as unknown)
-        .pipe(z.array(z.string().min(1))),
+    features: z.preprocess(
+        (value) => {
+            if (typeof value !== "string") {
+                return value;
+            }
+
+            try {
+                return JSON.parse(value);
+            } catch {
+                return value;
+            }
+        },
+        z.array(z.string().min(1)),
+    ),
 });
 
 export const createAdminSpotSchema = adminSpotBaseSchema.extend({

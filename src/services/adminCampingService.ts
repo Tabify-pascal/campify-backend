@@ -10,22 +10,27 @@ import type { AdminCampingBody } from "../schemas/adminCampingSchema.js";
 
 import { NotFoundError } from "../errors/NotFoundError.js";
 import { assertCanManageCamping } from "../utils/assertCanManageCamping.js";
+import { ValidationError } from "../errors/ValidationError.js";
 
-export async function getAdminCampings(
-    userId: string,
-    role: UserRole
-) {
+/**
+ * Retrieves all campings accessible to an admin or manager.
+ *
+ * @param userId - ID of the authenticated user.
+ * @param role - Role of the authenticated user.
+ * @returns A list of accessible campings, sorted alphabetically.
+ */
+export async function getAdminCampings(userId: string, role: UserRole) {
     return prisma.camping.findMany({
         where:
             role === "ADMIN"
                 ? {}
                 : {
-                    managers: {
-                        some: {
-                            userId,
-                        },
-                    },
-                },
+                      managers: {
+                          some: {
+                              userId,
+                          },
+                      },
+                  },
 
         orderBy: {
             name: "asc",
@@ -33,10 +38,18 @@ export async function getAdminCampings(
     });
 }
 
+/**
+ * Retrieves a camping by its ID after checking user permissions.
+ *
+ * @param campingId - ID of the requested camping.
+ * @param userId - ID of the authenticated user.
+ * @param role - Role of the authenticated user.
+ * @returns The requested camping.
+ */
 export async function getAdminCampingById(
     campingId: string,
     userId: string,
-    role: UserRole
+    role: UserRole,
 ) {
     const camping = await prisma.camping.findUnique({
         where: {
@@ -48,25 +61,23 @@ export async function getAdminCampingById(
         throw new NotFoundError("Camping");
     }
 
-    await assertCanManageCamping(
-        userId,
-        role,
-        campingId
-    );
+    await assertCanManageCamping(userId, role, campingId);
 
     return camping;
 }
 
-export async function createAdminCamping(
-    data: AdminCampingBody
-) {
+/**
+ * Creates a new camping using the provided details.
+ *
+ * @param data - Validated camping details.
+ * @returns The newly created camping.
+ */
+export async function createAdminCamping(data: AdminCampingBody) {
     return prisma.camping.create({
         data: {
             name: data.name,
             slug: data.slug,
-                ...(data.logoUrl !== undefined
-                ? { logoUrl: data.logoUrl }
-                : {}),
+            ...(data.logoUrl !== undefined ? { logoUrl: data.logoUrl } : {}),
             ...(data.description !== undefined
                 ? { description: data.description }
                 : {}),
@@ -74,17 +85,22 @@ export async function createAdminCamping(
     });
 }
 
+/**
+ * Updates an existing camping after checking user permissions.
+ *
+ * @param campingId - ID of the camping to update.
+ * @param data - Validated camping details.
+ * @param userId - ID of the authenticated user.
+ * @param role - Role of the authenticated user.
+ * @returns The updated camping.
+ */
 export async function updateAdminCamping(
     campingId: string,
     data: AdminCampingBody,
     userId: string,
-    role: UserRole
+    role: UserRole,
 ) {
-    await assertCanManageCamping(
-        userId,
-        role,
-        campingId
-    );
+    await assertCanManageCamping(userId, role, campingId);
 
     return prisma.camping.update({
         where: {
@@ -96,13 +112,17 @@ export async function updateAdminCamping(
             ...(data.description !== undefined
                 ? { description: data.description }
                 : {}),
-            ...(data.logoUrl !== undefined
-                ? { logoUrl: data.logoUrl }
-                : {}),
+            ...(data.logoUrl !== undefined ? { logoUrl: data.logoUrl } : {}),
         },
     });
 }
 
+/**
+ * Deletes a camping if it has no associated camping spots.
+ *
+ * @param campingId - ID of the camping to delete.
+ * @returns A promise that resolves when the camping is deleted.
+ */
 export async function deleteAdminCamping(campingId: string) {
     const camping = await prisma.camping.findUnique({
         where: {
@@ -122,8 +142,8 @@ export async function deleteAdminCamping(campingId: string) {
     }
 
     if (camping.spots.length > 0) {
-        throw new Error(
-            "Camping cannot be deleted while it still has spots"
+        throw new ValidationError(
+            "Camping cannot be deleted while it still has spots",
         );
     }
 

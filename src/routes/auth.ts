@@ -12,7 +12,7 @@ import {
     logoutUser,
     getCurrentUser,
     verifyEmailAddress,
-    resendVerification
+    resendVerification,
 } from "../controllers/authController.js";
 
 import { requireAuth } from "../middleware/requireAuth.js";

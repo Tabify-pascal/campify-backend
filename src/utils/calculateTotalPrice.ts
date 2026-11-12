@@ -4,6 +4,14 @@
  * @since 2026-10-07
  */
 
+/**
+ * Calculates the total reservation price based on the number of nights.
+ *
+ * @param arrivalDate - Arrival date of the reservation.
+ * @param departureDate - Departure date of the reservation.
+ * @param pricePerNight - Price per night for the camping spot.
+ * @returns The total reservation price.
+ */
 export function calculateTotalPrice(
     arrivalDate: Date,
     departureDate: Date,

@@ -7,6 +7,14 @@
 import { prisma } from "../prisma.js";
 import type { UserRole } from "../types/user.js";
 
+/**
+ * Checks whether a user has permission to manage a specific camping.
+ *
+ * @param userId - ID of the authenticated user.
+ * @param role - Role of the authenticated user.
+ * @param campingId - ID of the camping to check.
+ * @returns True if the user has permission, otherwise false.
+ */
 export async function canManageCamping(
     userId: string,
     role: UserRole,

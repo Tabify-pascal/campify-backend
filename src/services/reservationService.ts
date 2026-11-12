@@ -12,6 +12,12 @@ import { sendReservationNotifications } from "./reservationNotificationService.j
 import type { PaymentStatus } from "@prisma/client";
 import { calculateTotalPrice } from "../utils/calculateTotalPrice.js";
 
+/**
+ * Creates a reservation after validating the camping spot and availability.
+ *
+ * @param data - Validated reservation details.
+ * @returns The newly created reservation with its calculated total price.
+ */
 export async function createReservation(data: ReservationBody) {
     const spot = await prisma.spot.findUnique({
         where: { id: data.spotId },
@@ -22,12 +28,15 @@ export async function createReservation(data: ReservationBody) {
     }
 
     if (data.guests > spot.capacity) {
-        throw new Error("Too many guests for this camping spot");
+        throw new ValidationError("Too many guests for this camping spot");
     }
 
     const existingReservation = await prisma.reservation.findFirst({
         where: {
             spotId: data.spotId,
+            status: {
+                in: ["PENDING", "CONFIRMED"],
+            },
             arrivalDate: {
                 lt: data.departureDate,
             },
@@ -39,14 +48,14 @@ export async function createReservation(data: ReservationBody) {
 
     if (existingReservation) {
         throw new ValidationError(
-            "This camping spot is already reserved for the selected dates."
+            "This camping spot is already reserved for the selected dates.",
         );
     }
 
     const totalPrice = calculateTotalPrice(
         data.arrivalDate,
         data.departureDate,
-        spot.pricePerNight
+        spot.pricePerNight,
     );
 
     const reservation = await prisma.reservation.create({
@@ -68,25 +77,27 @@ export async function createReservation(data: ReservationBody) {
     });
 
     try {
-        await sendReservationNotifications(
-            reservation.id
-        );
+        await sendReservationNotifications(reservation.id);
     } catch (error) {
-        console.error(
-            "Failed to send reservation manager notification",
-            {
-                reservationId: reservation.id,
-                error,
-            }
-        );
+        console.error("Failed to send reservation manager notification", {
+            reservationId: reservation.id,
+            error,
+        });
     }
 
     return reservation;
 }
 
+/**
+ * Updates the simulated payment status of an existing reservation.
+ *
+ * @param reservationId - ID of the reservation to update.
+ * @param paymentStatus - New payment status.
+ * @returns The reservation with its updated payment status.
+ */
 export async function updateReservationPaymentStatus(
     reservationId: string,
-    paymentStatus: PaymentStatus
+    paymentStatus: PaymentStatus,
 ) {
     const reservation = await prisma.reservation.findUnique({
         where: {
@@ -111,9 +122,13 @@ export async function updateReservationPaymentStatus(
     });
 }
 
-export async function getReservationCheckoutSummary(
-    reservationId: string
-) {
+/**
+ * Retrieves the checkout summary for a specific reservation.
+ *
+ * @param reservationId - ID of the requested reservation.
+ * @returns The reservation summary with payment, pricing and camping details.
+ */
+export async function getReservationCheckoutSummary(reservationId: string) {
     const reservation = await prisma.reservation.findUnique({
         where: {
             id: reservationId,

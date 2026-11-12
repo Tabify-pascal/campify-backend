@@ -16,36 +16,35 @@ import { createEmailVerificationToken } from "./emailVerificationService.js";
 const emailVerificationEnabled =
     process.env.EMAIL_VERIFICATION_ENABLED !== "false";
 
-export async function login(
-    data: LoginBody
-) {
+/**
+ * Authenticates a user using their email address and password.
+ *
+ * @param data - Validated login credentials.
+ * @returns The authenticated user's details without the password hash.
+ */
+export async function login(data: LoginBody) {
     const user = await prisma.user.findUnique({
         where: {
             email: data.email.toLowerCase(),
         },
     });
 
-
     if (!user) {
-        throw new ValidationError(
-            "Invalid email or password"
-        );
+        throw new ValidationError("Invalid email or password");
     }
 
     const passwordValid = await verifyPassword(
         data.password,
-        user.passwordHash
+        user.passwordHash,
     );
 
     if (!passwordValid) {
-        throw new ValidationError(
-            "Invalid email or password"
-        );
+        throw new ValidationError("Invalid email or password");
     }
 
     if (emailVerificationEnabled && !user.emailVerifiedAt) {
         throw new ForbiddenError(
-            "Please verify your email address before logging in."
+            "Please verify your email address before logging in.",
         );
     }
 
@@ -58,6 +57,12 @@ export async function login(
     };
 }
 
+/**
+ * Registers a new customer account and sends a verification email if enabled.
+ *
+ * @param data - Validated registration details.
+ * @returns The newly created user's details without the password hash.
+ */
 export async function register(data: RegisterBody) {
     const email = data.email.trim().toLowerCase();
 
@@ -67,13 +72,11 @@ export async function register(data: RegisterBody) {
 
     if (existingUser) {
         throw new ValidationError(
-            "An account with this email address already exists"
+            "An account with this email address already exists",
         );
     }
 
-    const passwordHash = await hashPassword(
-        data.password
-    );
+    const passwordHash = await hashPassword(data.password);
 
     const user = await prisma.user.create({
         data: {
@@ -83,9 +86,7 @@ export async function register(data: RegisterBody) {
             passwordHash,
             role: "CUSTOMER",
 
-            emailVerifiedAt: emailVerificationEnabled
-                ? null
-                : new Date(),
+            emailVerifiedAt: emailVerificationEnabled ? null : new Date(),
         },
         select: {
             id: true,
@@ -97,9 +98,7 @@ export async function register(data: RegisterBody) {
     });
 
     if (emailVerificationEnabled) {
-        const token = await createEmailVerificationToken(
-            user.id
-        );
+        const token = await createEmailVerificationToken(user.id);
 
         const frontendUrl = process.env.FRONTEND_URL;
 
@@ -107,10 +106,7 @@ export async function register(data: RegisterBody) {
             throw new Error("FRONTEND_URL is not configured");
         }
 
-        const verificationUrl = new URL(
-            "/verify-email",
-            frontendUrl
-        );
+        const verificationUrl = new URL("/verify-email", frontendUrl);
 
         verificationUrl.searchParams.set("token", token);
 
@@ -136,6 +132,12 @@ export async function register(data: RegisterBody) {
     return user;
 }
 
+/**
+ * Retrieves an authenticated user's account details by their ID.
+ *
+ * @param userId - ID of the authenticated user.
+ * @returns The user's account details without the password hash.
+ */
 export async function getAuthenticatedUser(userId: string) {
     const user = await prisma.user.findUnique({
         where: {

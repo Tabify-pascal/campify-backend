@@ -7,7 +7,12 @@
 import { Router } from "express";
 import { requireAuth } from "../../middleware/requireAuth.js";
 import { requireRole } from "../../middleware/requireRole.js";
-import { getContactMessages, getContactMessageById, updateContactMessageStatus, deleteContactMessage } from "../../controllers/adminContactController.js";
+import {
+    getContactMessages,
+    getContactMessageById,
+    updateContactMessageStatus,
+    deleteContactMessage,
+} from "../../controllers/adminContactController.js";
 
 const router = Router();
 

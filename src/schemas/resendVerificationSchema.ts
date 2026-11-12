@@ -10,5 +10,4 @@ export const resendVerificationSchema = z.object({
     email: z.email(),
 });
 
-export type ResendVerificationBody =
-    z.infer<typeof resendVerificationSchema>;
+export type ResendVerificationBody = z.infer<typeof resendVerificationSchema>;

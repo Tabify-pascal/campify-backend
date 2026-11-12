@@ -6,10 +6,7 @@
 
 import { Router } from "express";
 
-import {
-    index,
-    show,
-} from "../controllers/campingController.js";
+import { index, show } from "../controllers/campingController.js";
 
 const router = Router();
 

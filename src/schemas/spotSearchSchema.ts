@@ -23,8 +23,7 @@ export const spotSearchSchema = z
         {
             message: "departureDate must be after arrivalDate",
             path: ["departureDate"],
-        }
+        },
     );
 
-export type SpotSearchQuery =
-    z.infer<typeof spotSearchSchema>;
+export type SpotSearchQuery = z.infer<typeof spotSearchSchema>;

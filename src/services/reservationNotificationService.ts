@@ -8,8 +8,14 @@ import { prisma } from "../prisma.js";
 import { sendMail } from "./mailService.js";
 import type { ReservationStatus } from "@prisma/client";
 
+/**
+ * Sends reservation confirmation emails to the customer and camping managers.
+ *
+ * @param reservationId - ID of the newly created reservation.
+ * @returns A promise that resolves when all notification attempts are completed.
+ */
 export async function sendReservationNotifications(
-    reservationId: string
+    reservationId: string,
 ): Promise<void> {
     const reservation = await prisma.reservation.findUnique({
         where: {
@@ -38,9 +44,7 @@ export async function sendReservationNotifications(
 
     const camping = reservation.spot.camping;
 
-    const managerEmails = camping.managers.map(
-        (manager) => manager.user.email
-    );
+    const managerEmails = camping.managers.map((manager) => manager.user.email);
 
     const reservationDetails = [
         `Camping: ${camping.name}`,
@@ -49,9 +53,7 @@ export async function sendReservationNotifications(
         `Aantal gasten: ${reservation.guests}`,
         `Aankomst: ${reservation.arrivalDate.toLocaleDateString("nl-NL")}`,
         `Vertrek: ${reservation.departureDate.toLocaleDateString("nl-NL")}`,
-        reservation.notes
-            ? `Opmerking: ${reservation.notes}`
-            : "",
+        reservation.notes ? `Opmerking: ${reservation.notes}` : "",
     ]
         .filter(Boolean)
         .join("\n");
@@ -71,12 +73,10 @@ export async function sendReservationNotifications(
                     `E-mail: ${reservation.email}`,
                     `Telefoon: ${reservation.phone}`,
                 ].join("\n"),
-            })
+            }),
         );
     } else {
-        console.warn(
-            `No managers found for camping ${camping.id}`
-        );
+        console.warn(`No managers found for camping ${camping.id}`);
     }
 
     mailTasks.push(
@@ -97,28 +97,32 @@ export async function sendReservationNotifications(
                 "Met vriendelijke groet,",
                 camping.name,
             ].join("\n"),
-        })
+        }),
     );
 
     const results = await Promise.allSettled(mailTasks);
 
     results.forEach((result, index) => {
         if (result.status === "rejected") {
-            console.error(
-                "Failed to send reservation notification",
-                {
-                    reservationId,
-                    mailIndex: index,
-                    error: result.reason,
-                }
-            );
+            console.error("Failed to send reservation notification", {
+                reservationId,
+                mailIndex: index,
+                error: result.reason,
+            });
         }
     });
 }
 
+/**
+ * Sends an email to the customer about a reservation status update.
+ *
+ * @param reservationId - ID of the reservation.
+ * @param status - New reservation status.
+ * @returns A promise that resolves when the notification is sent or the reservation is not found.
+ */
 export async function sendReservationStatusNotification(
     reservationId: string,
-    status: ReservationStatus
+    status: ReservationStatus,
 ): Promise<void> {
     const reservation = await prisma.reservation.findUnique({
         where: {
@@ -140,31 +144,23 @@ export async function sendReservationStatusNotification(
     const camping = reservation.spot.camping;
 
     const statusMessage: Record<ReservationStatus, string> = {
-        PENDING:
-            "Je reservering staat weer in behandeling.",
+        PENDING: "Je reservering staat weer in behandeling.",
 
-        CONFIRMED:
-            "Goed nieuws! Je reservering is bevestigd.",
+        CONFIRMED: "Goed nieuws! Je reservering is bevestigd.",
 
-        CANCELLED:
-            "Je reservering is geannuleerd.",
+        CANCELLED: "Je reservering is geannuleerd.",
 
-        COMPLETED:
-            "Je reservering is afgerond. Bedankt voor je verblijf!",
+        COMPLETED: "Je reservering is afgerond. Bedankt voor je verblijf!",
     };
 
     const statusSubject: Record<ReservationStatus, string> = {
-        PENDING:
-            `Reservering in behandeling - ${camping.name}`,
+        PENDING: `Reservering in behandeling - ${camping.name}`,
 
-        CONFIRMED:
-            `Reservering bevestigd - ${camping.name}`,
+        CONFIRMED: `Reservering bevestigd - ${camping.name}`,
 
-        CANCELLED:
-            `Reservering geannuleerd - ${camping.name}`,
+        CANCELLED: `Reservering geannuleerd - ${camping.name}`,
 
-        COMPLETED:
-            `Reservering afgerond - ${camping.name}`,
+        COMPLETED: `Reservering afgerond - ${camping.name}`,
     };
 
     await sendMail({

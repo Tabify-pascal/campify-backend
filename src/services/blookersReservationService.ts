@@ -13,23 +13,24 @@ import type { BlookersReservationBody } from "../schemas/blookersReservationSche
 import { sendReservationNotifications } from "./reservationNotificationService.js";
 import { calculateTotalPrice } from "../utils/calculateTotalPrice.js";
 
-export async function createBlookersReservation(
-    data: BlookersReservationBody
-) {
-    const existingExternalReservation =
-        await prisma.reservation.findUnique({
-            where: {
-                source_externalReservationId: {
-                    source: "BLOOKERS",
-                    externalReservationId: data.reservationId,
-                },
+/**
+ * Creates a reservation received from Blookers after validating availability.
+ *
+ * @param data - Validated reservation details received from Blookers.
+ * @returns The created reservation with its external booking reference.
+ */
+export async function createBlookersReservation(data: BlookersReservationBody) {
+    const existingExternalReservation = await prisma.reservation.findUnique({
+        where: {
+            source_externalReservationId: {
+                source: "BLOOKERS",
+                externalReservationId: data.reservationId,
             },
-        });
+        },
+    });
 
     if (existingExternalReservation) {
-        throw new ValidationError(
-            "This Blookers reservation already exists"
-        );
+        throw new ValidationError("This Blookers reservation already exists");
     }
 
     const spot = await prisma.spot.findUnique({
@@ -45,34 +46,31 @@ export async function createBlookersReservation(
     const totalPrice = calculateTotalPrice(
         data.arrivalDate,
         data.departureDate,
-        spot.pricePerNight
+        spot.pricePerNight,
     );
 
     if (data.guests > spot.capacity) {
-        throw new ValidationError(
-            "Too many guests for this camping spot"
-        );
+        throw new ValidationError("Too many guests for this camping spot");
     }
 
-    const conflictingReservation =
-        await prisma.reservation.findFirst({
-            where: {
-                spotId: spot.id,
-                status: {
-                    in: ["PENDING", "CONFIRMED"],
-                },
-                arrivalDate: {
-                    lt: data.departureDate,
-                },
-                departureDate: {
-                    gt: data.arrivalDate,
-                },
+    const conflictingReservation = await prisma.reservation.findFirst({
+        where: {
+            spotId: spot.id,
+            status: {
+                in: ["PENDING", "CONFIRMED"],
             },
-        });
+            arrivalDate: {
+                lt: data.departureDate,
+            },
+            departureDate: {
+                gt: data.arrivalDate,
+            },
+        },
+    });
 
     if (conflictingReservation) {
         throw new ValidationError(
-            "This camping spot is already reserved for the selected dates"
+            "This camping spot is already reserved for the selected dates",
         );
     }
 
@@ -92,9 +90,7 @@ export async function createBlookersReservation(
             pricePerNight: spot.pricePerNight,
             totalPrice,
 
-            ...(data.notes
-                ? { notes: data.notes }
-                : {}),
+            ...(data.notes ? { notes: data.notes } : {}),
 
             source: "BLOOKERS",
             externalReservationId: data.reservationId,
@@ -103,19 +99,13 @@ export async function createBlookersReservation(
     });
 
     try {
-        await sendReservationNotifications(
-            reservation.id
-        );
+        await sendReservationNotifications(reservation.id);
     } catch (error) {
-        console.error(
-            "Failed to send Blookers reservation notifications",
-            {
-                reservationId: reservation.id,
-                externalReservationId:
-                    data.reservationId,
-                error,
-            }
-        );
+        console.error("Failed to send Blookers reservation notifications", {
+            reservationId: reservation.id,
+            externalReservationId: data.reservationId,
+            error,
+        });
     }
 
     return reservation;

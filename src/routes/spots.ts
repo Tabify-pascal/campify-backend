@@ -5,7 +5,11 @@
  */
 
 import { Router } from "express";
-import { getAvailability, getSpot, getSpots} from "../controllers/spotsController.js";
+import {
+    getAvailability,
+    getSpot,
+    getSpots,
+} from "../controllers/spotsController.js";
 
 const router = Router();
 

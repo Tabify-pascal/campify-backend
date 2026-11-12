@@ -24,23 +24,27 @@ const spotInclude = {
     },
 };
 
-export async function getAdminSpots(
-    userId: string,
-    role: UserRole
-) {
+/**
+ * Retrieves all camping spots accessible to an admin or manager.
+ *
+ * @param userId - ID of the authenticated user.
+ * @param role - Role of the authenticated user.
+ * @returns A list of camping spots with features and camping details.
+ */
+export async function getAdminSpots(userId: string, role: UserRole) {
     return prisma.spot.findMany({
         where:
             role === "ADMIN"
                 ? {}
                 : {
-                    camping: {
-                        managers: {
-                            some: {
-                                userId,
-                            },
-                        },
-                    },
-                },
+                      camping: {
+                          managers: {
+                              some: {
+                                  userId,
+                              },
+                          },
+                      },
+                  },
         include: spotInclude,
         orderBy: {
             name: "asc",
@@ -48,10 +52,18 @@ export async function getAdminSpots(
     });
 }
 
+/**
+ * Retrieves a camping spot by its ID after checking user permissions.
+ *
+ * @param id - ID of the requested camping spot.
+ * @param userId - ID of the authenticated user.
+ * @param role - Role of the authenticated user.
+ * @returns The requested camping spot with features and camping details.
+ */
 export async function getAdminSpotById(
     id: string,
     userId: string,
-    role: UserRole
+    role: UserRole,
 ) {
     const spot = await prisma.spot.findUnique({
         where: { id },
@@ -62,25 +74,25 @@ export async function getAdminSpotById(
         throw new NotFoundError("Spot");
     }
 
-    await assertCanManageCamping(
-        userId,
-        role,
-        spot.campingId
-    );
+    await assertCanManageCamping(userId, role, spot.campingId);
 
     return spot;
 }
 
+/**
+ * Creates a new camping spot with its features after checking permissions.
+ *
+ * @param data - Validated camping spot details.
+ * @param userId - ID of the authenticated user.
+ * @param role - Role of the authenticated user.
+ * @returns The newly created camping spot with its features.
+ */
 export async function createAdminSpot(
     data: CreateAdminSpotBody,
     userId: string,
-    role: UserRole
+    role: UserRole,
 ) {
-    await assertCanManageCamping(
-        userId,
-        role,
-        data.campingId
-    );
+    await assertCanManageCamping(userId, role, data.campingId);
 
     return prisma.spot.create({
         data: {
@@ -104,11 +116,20 @@ export async function createAdminSpot(
     });
 }
 
+/**
+ * Updates a camping spot and replaces its features within a transaction.
+ *
+ * @param id - ID of the camping spot to update.
+ * @param data - Validated camping spot details.
+ * @param userId - ID of the authenticated user.
+ * @param role - Role of the authenticated user.
+ * @returns The updated camping spot with its features.
+ */
 export async function updateAdminSpot(
     id: string,
     data: UpdateAdminSpotBody,
     userId: string,
-    role: UserRole
+    role: UserRole,
 ) {
     const existingSpot = await prisma.spot.findUnique({
         where: { id },
@@ -118,17 +139,9 @@ export async function updateAdminSpot(
         throw new NotFoundError("Spot");
     }
 
-    await assertCanManageCamping(
-        userId,
-        role,
-        existingSpot.campingId
-    );
+    await assertCanManageCamping(userId, role, existingSpot.campingId);
 
-    await assertCanManageCamping(
-        userId,
-        role,
-        data.campingId
-    );
+    await assertCanManageCamping(userId, role, data.campingId);
 
     return prisma.$transaction(async (tx) => {
         await tx.spotFeature.deleteMany({
@@ -145,8 +158,7 @@ export async function updateAdminSpot(
                 description: data.description,
                 capacity: data.capacity,
                 pricePerNight: data.pricePerNight,
-                imageUrl:
-                    data.imageUrl ?? existingSpot.imageUrl,
+                imageUrl: data.imageUrl ?? existingSpot.imageUrl,
                 size: data.size,
                 electricity: data.electricity,
                 waterConnection: data.waterConnection,
@@ -162,10 +174,18 @@ export async function updateAdminSpot(
     });
 }
 
+/**
+ * Deletes a camping spot after checking user permissions.
+ *
+ * @param id - ID of the camping spot to delete.
+ * @param userId - ID of the authenticated user.
+ * @param role - Role of the authenticated user.
+ * @returns A promise that resolves when the camping spot is deleted.
+ */
 export async function deleteAdminSpot(
     id: string,
     userId: string,
-    role: UserRole
+    role: UserRole,
 ) {
     const spot = await prisma.spot.findUnique({
         where: { id },
@@ -175,11 +195,7 @@ export async function deleteAdminSpot(
         throw new NotFoundError("Spot");
     }
 
-    await assertCanManageCamping(
-        userId,
-        role,
-        spot.campingId
-    );
+    await assertCanManageCamping(userId, role, spot.campingId);
 
     await prisma.spot.delete({
         where: { id },
