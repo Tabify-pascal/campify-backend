@@ -17,6 +17,12 @@ export function calculateTotalPrice(
     departureDate: Date,
     pricePerNight: number
 ): number {
+    if (departureDate.getTime() <= arrivalDate.getTime()) {
+        throw new Error(
+            "Departure date must be after arrival date"
+        );
+    }
+    
     const millisecondsPerDay =
         1000 * 60 * 60 * 24;
 

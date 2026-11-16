@@ -10,9 +10,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "prisma:seed": "tsx prisma/seed.ts",
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
-    "test:watch": "npm test -- --watch",
-    "test:coverage": "npm test -- --coverage"
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
